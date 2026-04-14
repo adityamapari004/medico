@@ -1,0 +1,129 @@
+Unnamed: 0,Name,DateOfBirth,Gender,Symptoms,Causes,Disease,Medicine
+108,Ethan Teo,03-08-1978,Male,Shortness of breath,Obesity,Sleep Apnea,CPAP Machine
+193,Emma Tan,03-07-1992,Female,Cough Shortness of breath,COVID-19 Exposure,COVID-19,Medication Fluids
+2,Michael Lee,20-02-1975,Male,Shortness of breath,Pollution,Asthma,Albuterol Inhaler
+201,Grace Lee,07-12-1991,Female,Fatigue Weakness,Chronic Fatigue Syndrome,Chronic Fatigue Syndrome,Rest Lifestyle
+50,Lily Lim,26-04-1989,Female,Joint Pain Swelling,Rheumatoid Arthritis,Arthritis,NSAIDs
+45,Grace Lee,07-12-1992,Female,Fatigue Weakness,Chronic Fatigue Syndrome,Chronic Fatigue Syndrome,Rest Lifestyle
+122,Emma Tan,03-07-1991,Female,Cough Shortness of brea,th  COVID-19 Exposure,COVID-19,Medication Fluids
+162,Sophia Goh,12-07-1992,Female,Skin Rash Itching,Allergies,Dermatitis,Topical Steroids
+27,Amy Lim,05-03-1981,Female,Joint Pain Fatigue,Osteoarthritis,Arthritis,Pain Relievers
+240,Evan Lim,17-03-2003,Male,Chest Pain Shortness,Physical Exertion,Muscle Overuse,Rest Stretching
+148,Grace Lee,07-12-1992,Female,e Fatigue Weakness,Chronic Fatigue,Chronic Fatigue,Rest Lifestyle
+169,Emma Lim,02-03-2001,Female,Nausea Cramps,Menstrual Cycle,Menstrual Cramps,Pain Relievers
+272,Emily Koh,19-05-1984,Female,Joint Pain Fatigue,Rheumatoid Arthritis ,Arthritis,NSAIDs
+39,Ryan Koh,18-02-1975,Male,Muscle Pain Fatigue,Overexertion,Muscle Strain,Rest Pain Relievers
+146,Ava Yeo,25-01-1973,Female,e Back Pain Numbness,Sciatica,Herniated Disc,Pain Relievers PT
+22,Sophia Teo,03-02-2000,Female,Anxiety Rapid Heartbeat,Stress,Panic Disorder,Cognitive Therapy
+268,Jack Tan,15-09-1978,Male,Shortness of breath,Obesity             ,Sleep Apnea,CPAP Machine
+116,Sophie Yeo,02-12-2001,Female,Nausea Cramps,Menstrual Cycle,Menstrual Cramps,Pain Relievers
+192,Isaac Goh,18-02-1998,Male,Fever Chills,Infection,Pneumonia,Antibiotics Rest
+11,Kevin Yeo,22-10-1978,Male,Fever Muscle Aches,Viral Infection,Influenza,Acetaminophen
+114,Natalie Lim,19-10-1987,Female,Headache Sensitivity,Tension,Tension Headache,Medication NSAIDs
+155,Sophia Koh,29-11-1976,Female,e Fatigue Weakness,Chronic Fatigue Syndrome,Chronic Fatigue Syndrome,Rest Lifestyle
+6,David Wu,18-09-1995,Male,Chest Pain Dizziness,High Blood Pressure,Hypertension,Amlodipine
+28,Jason Lee,11-06-2003,Male,Dizziness Fatigue,Dehydration,Heat Exhaustion,"Rehydration,Medication Rest"
+137,Sophia Koh,29-11-1976,Female,e Fatigue Weakness,Chronic Fatigue,Chronic Fatigue,Rest Lifestyle
+262,Sophia Koh,29-11-1979,Female,Fatigue Weakness,Chronic FatigueSyndrome,Chronic Fatigue Syndrome,Rest Lifestyle
+206,Lily Lim,26-04-1995,Female,Joint Pain Swelling,Rheumatoid Arthritis,Arthritis,NSAIDs
+44,Lucas Tan,09-09-2000,Male,Fever Sore Throat,Viral Infection,Tonsillitis,Fluids Rest
+4,Alex Wong,12-06-2001,Male,Sore Throat,Bacterial Infection,Strep Throat,Penicillin
+227,Sophia Koh,03-07-1991,Male,eathing,Allergies,Gastroenteritis,Rest Lifestyle
+34,Isabella Koh,08-04-1996,Female,Fatigue Difficulty breathing,Hypothyroidism,Thyroid Disorder,Levothyroxine
+207,Leo Goh,13-07-1990,Male,Nausea Dizziness,Motion Sickness,Motion Sickness,Dimenhydrinate
+224,Benjamin Tan,26-07-1976,Male,Chest Pain Shortness,Heart Disease,Coronary Artery,Nitroglycerin
+117,Vincent Tan,26-08-1977,Male,Chest Pain Shortness of breath,Heart Disease,Coronary Artery,NitroglycerinAspirin
+10,Sophia Koh,03-07-1991,Female,Fatigue Weakness,Allergies,Gastroenteritis,Rest Lifestyle
+168,Eli Goh,09-12-1994,Male,Abdominal Pain Bloating,Overeating,Indigestion,Antacids
+185,Sophia Teo,28-06-1985,Female,Anxiety Palpitations,Stress,Anxiety Disorder,Therapy Medication
+0,John Doe,15-05-1980,Male,Fever Cough,Viral Infection,Common Cold,Ibuprofen Rest
+197,David Lim,05-10-1998,Male,Headache Blurred Vision,Eye Strain,Vision Fatigue,Rest Eye Exercises
+188,Lily Tan,26-04-1990,Female,Joint Pain Swelling,Rheumatoid Arthritis,Arthritis,NSAIDs
+113,Jason Goh,29-07-2003,Male,Dizziness Fatigue,Dehydration,Heat Exhaustion,"Rehydration,Medication Rest"
+48,Evan Teo,17-03-2002,Male,Chest Pain Shortness of breath,Physical Exertion,Muscle Overuse,Rest Stretching
+158,Emma Wong,10-04-1995,Female,Sore Throat Cough,Bacterial Infection,Strep Throat,Penicillin
+29,Natalie Tan,19-10-1987,Female,Headache Sensitivity,Tension,Tension Headache,Medication NSAIDs
+43,Ava Yeo,25-01-1973,Female,Back Pain Numbness,Sciatica,Herniated Disc,Pain Relievers PT
+189,Leo Lim,13-07-1999,Male,Nausea Dizziness,Motion Sickness,Motion Sickness,Dimenhydrinate
+25,Eric Koh,08-01-1997,Male,Cough Fever,Viral Infection,Respiratory infection,Antivirals Rest
+23,Andrew Ng,16-07-1974,Male,Shortness of breath,Obesity,Sleep Apnea,CPAP Machine
+195,Ryan Koh,18-02-1978,Male,Muscle Pain Fatigue,Overexertion,Muscle Strain,Rest Pain Relievers
+141,Grace Neo,16-09-1988,Female,e Itching Redness,Allergies,Allergic Reaction,Antihistamine
+42,Oliver Wang,14-08-1986,Male,Stomach Pain Diarrhea,Food Poisoning,Gastroenteritis,Fluids Bland Diet
+166,Aiden Neo,22-08-1997,Male,Dizziness Fatigue,Dehydration,Heat Exhaustion,"Rehydration,Medication Rest"
+283,Liam Goh,16-09-1987,Male,Itching Redness,Allergies           ,Allergic Reaction,Antihistamine
+282,Ava Lim,11-07-1993,Female,Cough Shortness of breath,COVID-19 Exposure   ,COVID-19,Medication Fluids
+226,Mia Neo,18-10-1995,Female,Fatigue Difficulty,Hypothyroidism,Thyroid Disorder,Levothyroxine
+57,Sarah Kim,25-03-1972,Female,Joint Pain Fatigue,Rheumatoid Arthriti,Arthritis,NSAIDs
+278,Sophia Koh,03-07-1991,Female,Fatigue Weakness,Allergies,,Rest Lifestyle
+109,Linda Neo,28-04-1989,Female, Skin Rash Itching,Allergies,Dermatitis,Topical Steroids
+130,Grace Lee,07-12-1992,Female, Fatigue Weakness,Chronic Fatigue Syndrome,Chronic Fatigue Syndrome,Rest Lifestyle
+36,Ethan Lim,30-11-1980,Male,Fever Chills,Infection,Pneumonia,Antibiotics Rest
+198,Oliver Wang,14-08-1984,Male,Stomach Pain Diarrhea,Food Poisoning,Gastroenteritis,Fluids Bland Diet
+196,Sophia Tan,21-05-2005,Female,Nausea Vomiting,Food Poisoning,Gastroenteritis,Oral RehydrationMedication
+204,Evan Teo,17-03-2001,Male,Chest Pain Shortness of breath,Physical Exertion,Muscle Overuse,Rest Stretching
+110,Alex Koh,11-12-1995,Male,Cough Fever,Viral Infection,RespiratoryInfection,Antivirals Rest
+285,Noah Lim,21-05-2005,Male,Nausea Vomiting,Food Poisoning  ,Muscle Strain,RehydrationMedication
+274,Nora Tan,10-01-1989,Female,Headache Sensitivity,Tension             ,Tension Headache Relief,Medication NSAIDs
+279,Mia Neo,18-10-1995,Female,Fatigue Difficulty breathing,Hypothyroidism      ,Disease,Levothyroxine
+81,Evan Teo,17-03-2002,Male,Chest Pain Shortness,Physical Exertion,Muscle Overuse,Rest Stretching
+5,Sarah Kim,25-03-1972,Female,Joint Pain Fatigue,Rheumatoid Arthritis,Arthritis,NSAIDs
+275,Eli Goh,09-12-1994,Male,Abdominal Pain Bloating,Overeating          ,IndigestionAnta,cids
+203,Sophie Neo,28-06-1984,Female,Anxiety Palpitations,Stress,Anxiety Disorder,Therapy Medication
+67,Sophia Koh,29-11-1976,Female,Fatigue Weakness,Chronic Fatigue Syndrome,Chronic Fatigue Syndrome,Rest Lifestyle
+38,Grace Ng,16-09-1988,Female,Itching Redness,Allergies,Allergic Reaction,Antihistamine
+143,Sophia Tan,21-05-2004,Female,e Nausea Vomiting,Food Poisoning,Gastroenteritis,Oral RehydrationMedication
+138,Sophia Koh,03-07-1991,Female,Fatigue Weakness,Syndrome,Syndrome,Rest Lifestyle
+37,Emma Tan,03-07-1991,Female,Cough Shortness of breath,COVID-19 Exposure,COVID-19,Medication Fluids
+51,Leo Goh,13-07-1998,Male,Nausea Dizziness,Motion Sickness,Motion Sickness,Dimenhydrinate
+7,Olivia Tan,08-07-1987,Female,Itching Redness,Allergies,Allergic Reaction,Antihistamine
+47,Sophie Neo,28-06-1983,Female,Anxiety Palpitations,Stress,Anxiety Disorder,Therapy Medication
+123,Grace Ng,16-09-1988,Female,e Itching Redness,Allergies,Allergic Reaction,Antihistamine
+200,Lucas Tan,09-09-1999,Male,Fever Sore Throat,Viral Infection,Tonsillitis,Fluids Rest
+186,Evan Lim,17-03-2003,Male,Chest Pain Shortness of breath,Physical Exertion,Muscle Overuse,Rest Stretching
+163,Ryan Lim,07-01-2003,Male,Cough Fever,Viral Infection,Respiratory Infection,Antivirals Rest
+150,Sophie Neo,28-06-1983,Female,e Anxiety Palpitations,Stress,Anxiety Disorder,Therapy Medication
+269,Sophia Goh,12-07-1992,Female,Skin Rash Itching,Allergies           ,Dermatitis,Topical Steroids
+270,Ryan Lim,07-01-2003,Male,Cough Fever,Viral Infection     ,RespiratoryAntiInfection,virals Rest
+161,Jack Tan,15-09-1978,Male,Shortness of breath,Obesity,Sleep Apnea,CPAP Machine
+8,Chris Ng,01-12-1983,Male,Abdominal Pain Bloating,Poor Diet,Indigestion,Antacids
+190,Sophia Koh,29-11-1977,Female,Fatigue Weakness,Chronic Fatigue Syndrome,Chronic Fatigue Syndrome,Rest Lifestyle
+13,Daniel Oh,19-07-1990,Male,Nausea Dizziness,Motion Sickness,Motion Sickness,Dimenhydrinate
+107,Sophie Lim,05-06-2000,Female, Anxiety Rapid Heartbeat,Stress,Panic Disorder,Cognitive Therapy
+237,Emma Lee,07-12-1994,Female,Fatigue Weakness,Chronic Fatigue,Chronic Fatigue,Rest Lifestyle
+3,Emily Chen,03-11-1988,Female,Nausea Vomiting,Food Poisoning,Gastroenteritis,Oral RehydrationMedication
+17,Peter Ho,25-04-1986,Male,Joint Pain Swelling,Autoimmune Response,Rheumatoid Arthritis,NSAIDs
+41,David Lim,05-10-1999,Male,Headache Blurred Vision,Eye Strain,Vision Fatigue,Rest Eye Exercises
+128,Ava Yeo,25-01-1973,Female, Back Pain Numbness,Sciatica,Herniated Disc,Pain Relievers PT
+265,Emma Wong,10-04-1995,Female,Sore Throat Cough,Bacterial Infection ,Strep Throat,Penicillin
+225,Sophia Koh,03-07-1991,Female,of breath,Allergies,Disease,Aspirin
+112,Amy Tan,15-03-1981,Female,Joint Pain Fatigue,Osteoarthritis,Arthritis,Pain Relievers
+82,Sophia Koh,03-07-1991,Female,of breath,Allergies,Gastroenteritis,Rest Lifestyle
+182,Aiden Tan,09-09-2002,Male,Fever Sore Throat,Viral Infection,Tonsillitis,Fluids Rest
+69,Isaac Tan,18-02-1999,Male,Fever Chills,Infection,Pneumonia,Antibiotics Rest
+284,Sophie Tan,18-02-1975,Female,Muscle Pain Fatigue,Overexertion        ,Muscle Strain,Rest Pain Relievers
+106,Jackson Tan,22-09-1997,Male,Fatigue Weakness,Anemia,Iron Deficiency,Iron Supplements
+61,Samantha Liu,30-04-1998,Female,Fatigue Sadness,Depression,Major Depressive Disorder,Sertraline
+160,Olivia Teo,03-06-2000,Female,Anxiety Rapid Heartbeat,Stress,Panic Disorder,Cognitive Therapy
+21,William Low,28-05-1989,Male,Fatigue Weakness,Anemia,Iron Deficiency,Iron Supplements
+105,Isabella Goh,14-03-1984,Female,Abdominal Pain Bloating,Overeating,Indigestion,Antacids
+281,Noah Koh,15-03-1980,Male,Fever Chills,Infection           ,Pheumonia,Antibiotics Rest
+210,Isaac Tan,18-02-2000,Male,Fever Chills,Infection,Pneumonia,Antibiotics Rest
+40,Sophia Tan,21-05-2004,Female,Nausea Vomiting,Food Poisoning,Gastroenteritis,Oral RehydrationMedication
+276,Emma Lim,02-03-2001,Female,Nausea Cramps,Menstrual Cycle    ,Menstrual Cramps Pain,Pain Relievers
+1,Jane Smith,10-08-1992,Female,Headache Fatigue,Stress,Migraine,Sumatriptan
+71,Grace Neo,16-09-1988,Female,Itching Redness,Allergies,Allergic Reaction,Antihistamine
+217,Ryan Lim,07-01-2003,Male,Cough Fever,Viral Infection,Respiratory,Antivirals Rest
+178,Noah Lim,21-05-2005,Male,Nausea Vomiting,Food Poisoning,Gastroenteritis,Oral RehydrationMedication
+174,Noah Koh,15-03-1980,Male,Fever Chills,Infection,Pneumonia,Antibiotics Rest
+194,Grace Neo,16-09-1989,Female,Itching Redness,Allergies,Allergic Reaction,Antihistamine
+159,Daniel Neo,28-11-1987,Male,Fatigue Weakness,Anemia,Iron Deficiency,Iron Supplements
+132,Sophie Neo,28-06-1983,Female, Anxiety Palpitations,Stress,Anxiety Disorder,Therapy Medication
+199,Ava Yeo,25-01-1972,Female,Back Pain Numbness,Sciatica,Herniated Disc,Pain Relievers PT
+286,Ella Wong,05-10-1999,Female,Headache Blurred Vision,Eye Strain          ,Muscle Strain,Eye Exercises
+20,Michelle Lam,17-11-1993,Female,Nausea Vomiting,Pregnancy,Morning Sickness,Ginger Vitamin B6
+125,Sophia Tan,21-05-2004,Female, Nausea Vomiting,Food Poisoning,Gastroenteritis,Oral RehydrationMedication
+181,Grace Koh,25-01-1971,Female,Back Pain Numbness,Sciatica,Herniated Disc,Pain Relievers PT
+14,Linda Goh,08-09-1982,Female,Shortness of breath,Smoking,Chronic Bronchitis,Inhalers
+165,Emily Koh,19-05-1984,Female,Joint Pain Fatigue,Rheumatoid Arthritis,Arthritis,NSAIDs
+177,Sophie Tan,18-02-1975,Female,Muscle Pain Fatigue,Overexertion,Muscle Strain,Rest Pain Relievers
