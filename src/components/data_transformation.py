@@ -33,27 +33,14 @@ class DataTransformation:
             logging.info('Data Transformation initiated')
             # Define which columns should be ordinal-encoded and which should be scaled
             ## identify numerical and categorical columns
-            numerical_cols=df.select_dtypes(include=['int64', 'float64']).columns.tolist()
-            categorical_cols=df.select_dtypes(include=['object','category']).columns.tolist()
+            categorical_col=['Gender','Symptoms','Causes','Disease','Medicine']
 
             ## remove target column from numerical and categorical columns list
             target="medicine"
-            if target in numerical_cols:
-                numerical_cols.remove(target)
-            if target in categorical_cols:
-                categorical_cols.remove(target)
+            
+              
 
-            logging.info(f'Numerical columns: {numerical_cols}')
-            logging.info(f'Categorical columns: {categorical_cols}')
-
-            ## Define the numerical pipeline
-            num_pipeline=Pipeline(
-                steps=[
-                    ('imputer',SimpleImputer(strategy='median')),
-                    ('scaler',StandardScaler())
-                ]
-            )
-
+           
             ## Define the categorical pipeline
             cat_pipeline=Pipeline(
                 steps=[
@@ -65,8 +52,8 @@ class DataTransformation:
             ## Combine numerical and categorical pipelines into a preprocessor
             preprocessor=ColumnTransformer(
                 transformers=[
-                    ('num_pipeline',num_pipeline,numerical_cols),
-                    ('cat_pipeline',cat_pipeline,categorical_cols)
+                    
+                    ('cat_pipeline',cat_pipeline,categorical_col)
                 ]
             )
 
@@ -74,10 +61,9 @@ class DataTransformation:
             return preprocessor
         except Exception as e:
             logging.info('Error in Data Transformation')
-            raise CustomException(e)
+            raise CustomException(e, sys)
 
-    
-def initiate_data_transformation(self, train_path, test_path):
+    def initiate_data_transformation(self, train_path, test_path):
         
         """ reads train and test data from the given paths, applies the data transformation steps, and returns the transformed data along with the preprocessor object path
         Args:            train_path (str): The file path to the training data CSV file.
@@ -97,19 +83,17 @@ def initiate_data_transformation(self, train_path, test_path):
             logging.info('Read train and test data completed')
 
             logging.info('Obtaining preprocessor object')
-            preprocessor_obj=self.get_data_transformer_object(train_df)
-            target_column_name='medicine'
-            if target_column_name not in train_df.columns:
-                raise CustomException(f'Target column {target_column_name} not found in training data')
-
-            if target_column_name not in test_df.columns:
-                raise CustomException(f'Target column {target_column_name} not found in testing data')
+            preprocessor=self.get_data_transformer_object(self)
+            target_column_name='Medicine'
+            
 
             X_train=train_df.drop(columns=[target_column_name],axis=1)
             y_train=train_df[target_column_name]
 
             X_test=test_df.drop(columns=[target_column_name],axis=1)
             y_test=test_df[target_column_name]
+
+
             logging.info('Applying preprocessor object on training and testing data')
             logging.info(f'X_train columns: {X_train.shape}')
             logging.info(f'X_test columns: {X_test.shape}')
@@ -123,10 +107,8 @@ def initiate_data_transformation(self, train_path, test_path):
             y_test=label_encoder.transform(y_test)
 
             logging.info(f"classes found: {list(label_encoder.classes_)}")
-
-
+### error occured below
             ## build and fit preprocessor
-            preprocessor=self.get_preprocessor_object(X_train)
             logging.info('Fitting preprocessor object on training data')
             
             x_train_transformed=preprocessor.fit_transform(X_train)
@@ -136,23 +118,24 @@ def initiate_data_transformation(self, train_path, test_path):
 
             ## combine X+y arrays 
 
-            train_arr=np.c_[x_train_transformed,y_train]
-            test_arr=np.c_[X_test_transformed,y_test]
+            train_arr=np.c_[x_train_transformed,np.array(y_train)]
+            test_arr=np.c_[X_test_transformed,np.array(y_test)]
 
 
             ## save preprocessor 
 
-            save_object(file_path=self.config.preprocessor_path,
+            save_object(file_path=self.data_transformation_config.preprocessor_obj_file_path,
                         obj={
 
                              "preprocessor":preprocessor,
-                             "lableEncoder":label_encoder
+                             
                         }
                           
                         )
             logging.info("data transformation completed ")
             
-            return (train_arr, test_arr,self.config.preprocessor_path)
+            return (train_arr, test_arr,self.data_transformation_config.preprocessor_obj_file_path)
         
         except Exception as e :
             raise CustomException (e,sys)
+        
