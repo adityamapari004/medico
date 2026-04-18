@@ -30,7 +30,7 @@ class DataIngestion:
     def initiate_data_ingestion(self):
         logging.info('Entered the data ingestion method or component')
         try:
-            df=pd.read_csv('C:\\Users\\hp\\OneDrive\\Attachments\\Desktop\\medico\\notebook\\data\\medical.csv')
+            df=pd.read_csv('C:\\Users\\hp\\OneDrive\\Attachments\\Desktop\\medico\\notebook\\data\\cleaned.csv')
             logging.info('Read the dataset as dataframe')
 
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path),exist_ok=True)
@@ -62,3 +62,13 @@ if __name__=="__main__":
     from src.components.data_transformation import DataTransformation
     data_transformation=DataTransformation()
     train_arr,test_arr,preprocessor_path=data_transformation.initiate_data_transformation(train_data,test_data)
+
+
+    from src.components.model_trainer import ModelTrainer
+
+    trainer=ModelTrainer()
+
+    accuracy,best_model=trainer.initiate_model_training(train_arr,test_arr)
+
+
+    print("\n Best model{best_model}")
