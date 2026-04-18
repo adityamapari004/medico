@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediGuide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: #070E1C;
+            color: #C8D8E8;
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero {
+            text-align: center;
+            padding: 40px 20px;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(10,191,163,0.1);
+            border: 1px solid rgba(10,191,163,0.3);
+            color: #0ABFA3;
+            padding: 6px 18px;
+            border-radius: 100px;
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+        }
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: clamp(40px, 7vw, 80px);
+            font-weight: 800;
+            color: #EEF4FF;
+            line-height: 1.1;
+            margin-bottom: 20px;
+        }
+        h1 span { color: #0ABFA3; }
+        p {
+            font-size: 18px;
+            color: #5A7090;
+            max-width: 480px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+        .btn {
+            background: #0ABFA3;
+            color: #070E1C;
+            padding: 16px 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        .btn:hover {
+            background: #EEF4FF;
+            transform: translateY(-3px);
+        }
+        .stats {
+            display: flex;
+            gap: 60px;
+            justify-content: center;
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .stat-num {
+            font-family: 'Syne', sans-serif;
+            font-size: 36px;
+            font-weight: 800;
+            color: #EEF4FF;
+        }
+        .stat-num span { color: #0ABFA3; }
+        .stat-label {
+            font-size: 12px;
+            color: #5A7090;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="badge">🧬 AI Powered Healthcare</div>
+        <h1>Smart <span>Medicine</span><br>Recommendation</h1>
+        <p>Describe your symptoms and get instant medicine recommendations with nearby doctor locations.</p>
+        <a href="/predict" class="btn">Get Started →</a>
+        <div class="stats">
+            <div>
+                <div class="stat-num">98<span>%</span></div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+            <div>
+                <div class="stat-num">120<span>+</span></div>
+                <div class="stat-label">Conditions</div>
+            </div>
+            <div>
+                <div class="stat-num">5<span>k+</span></div>
+                <div class="stat-label">Doctors</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

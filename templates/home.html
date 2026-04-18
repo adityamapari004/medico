@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MediGuide — Predict</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: #070E1C;
+            color: #C8D8E8;
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* NAV */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 48px;
+        }
+        .logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #EEF4FF;
+        }
+        .logo span { color: #0ABFA3; }
+        nav a {
+            color: #5A7090;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        nav a:hover { color: #0ABFA3; }
+
+        /* FORM */
+        .form-card {
+            background: #111E35;
+            border: 1px solid rgba(10,191,163,0.12);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 32px;
+        }
+        .form-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: #EEF4FF;
+            margin-bottom: 8px;
+        }
+        .form-sub {
+            color: #5A7090;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-group.full { grid-column: 1 / -1; }
+        label {
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #5A7090;
+            font-weight: 500;
+        }
+        input, select, textarea {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: #EEF4FF;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.2s;
+            width: 100%;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #0ABFA3;
+        }
+        select option { background: #111E35; }
+        textarea { resize: vertical; min-height: 100px; }
+        .btn-submit {
+            margin-top: 24px;
+            background: #0ABFA3;
+            color: #070E1C;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background: #EEF4FF;
+            transform: translateY(-2px);
+        }
+
+        /* RESULTS */
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .result-card {
+            background: #111E35;
+            border: 1px solid rgba(10,191,163,0.15);
+            border-radius: 20px;
+            padding: 28px;
+            border-left: 4px solid #0ABFA3;
+        }
+        .result-card.red   { border-left-color: #FF6B6B; }
+        .result-card.gold  { border-left-color: #F5C842; }
+        .result-card.green { border-left-color: #0ABFA3; }
+        .rc-label {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #5A7090;
+            margin-bottom: 10px;
+        }
+        .rc-value {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 800;
+            color: #EEF4FF;
+        }
+        .rc-sub {
+            font-size: 13px;
+            color: #0ABFA3;
+            margin-top: 6px;
+        }
+
+        /* MEDICINE DETAILS */
+        .details-card {
+            background: #111E35;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+        .details-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #EEF4FF;
+            margin-bottom: 20px;
+        }
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .detail-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .di-label {
+            font-size: 11px;
+            color: #5A7090;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+        .di-value {
+            font-size: 15px;
+            color: #EEF4FF;
+            font-weight: 500;
+        }
+
+        /* WARNING */
+        .warning-box {
+            background: rgba(255,107,107,0.08);
+            border: 1px solid rgba(255,107,107,0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: #FF6B6B;
+            font-size: 13px;
+            margin-top: 24px;
+        }
+
+        /* DISCLAIMER */
+        .disclaimer {
+            background: rgba(245,200,66,0.06);
+            border: 1px solid rgba(245,200,66,0.2);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: #F5C842;
+            font-size: 13px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid, .result-grid, .details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- NAV -->
+    <nav>
+        <div class="logo">Medi<span>Guide</span></div>
+        <a href="/">← Back to Home</a>
+    </nav>
+
+    <!-- FORM -->
+    <div class="form-card">
+        <div class="form-title">💊 Get Medicine Recommendation</div>
+        <div class="form-sub">Fill in your details for an AI-powered recommendation</div>
+
+        <form action="/predict" method="POST">
+            <div class="form-grid">
+
+                <div class="form-group full">
+                    <label>Describe Your Symptoms</label>
+                    <textarea
+                        name="symptoms"
+                        placeholder="e.g. fever, headache, cough, chest pain..."
+                        required
+                    >{{ symptoms or '' }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Age Group</label>
+                    <select name="age_group">
+                        <option value="Child"  {% if age_group=='Child'  %}selected{% endif %}>Child (0–12)</option>
+                        <option value="Teen"   {% if age_group=='Teen'   %}selected{% endif %}>Teen (13–17)</option>
+                        <option value="Adult"  {% if age_group=='Adult'  %}selected{% endif %} selected>Adult (18–60)</option>
+                        <option value="Senior" {% if age_group=='Senior' %}selected{% endif %}>Senior (60+)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Severity</label>
+                    <select name="severity">
+                        <option value="Mild"     {% if severity=='Mild'     %}selected{% endif %}>Mild</option>
+                        <option value="Moderate" {% if severity=='Moderate' %}selected{% endif %}>Moderate</option>
+                        <option value="Severe"   {% if severity=='Severe'   %}selected{% endif %}>Severe</option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <label>Known Allergies</label>
+                    <input
+                        type="text"
+                        name="allergies"
+                        placeholder="e.g. Penicillin, Aspirin or None"
+                        value="{{ allergies or 'None' }}"
+                    />
+                </div>
+
+            </div>
+            <button type="submit" class="btn-submit">
+                🔍 Get Recommendation
+            </button>
+        </form>
+    </div>
+
+    <!-- RESULTS -->
+    {% if result %}
+    <div class="result-grid">
+        <div class="result-card green">
+            <div class="rc-label">💊 Recommended Medicine</div>
+            <div class="rc-value">{{ result.medicine }}</div>
+            <div class="rc-sub">AI Predicted</div>
+        </div>
+        <div class="result-card">
+            <div class="rc-label">🏥 See a Specialist</div>
+            <div class="rc-value">{{ result.specialty }}</div>
+            <div class="rc-sub">Based on symptoms</div>
+        </div>
+        <div class="result-card gold">
+            <div class="rc-label">📊 Confidence Score</div>
+            <div class="rc-value">
+                {{ result.confidence }}%
+            </div>
+            <div class="rc-sub">Model confidence</div>
+        </div>
+        <div class="result-card red">
+            <div class="rc-label">⚠️ Severity Level</div>
+            <div class="rc-value">{{ severity }}</div>
+            <div class="rc-sub">User reported</div>
+        </div>
+    </div>
+
+    <!-- MEDICINE DETAILS -->
+    <div class="details-card">
+        <div class="details-title">📋 Medicine Details</div>
+        <div class="details-grid">
+            <div class="detail-item">
+                <div class="di-label">📏 Dosage</div>
+                <div class="di-value">{{ details.dosage }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="di-label">🕐 Frequency</div>
+                <div class="di-value">{{ details.frequency }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="di-label">💊 Medicine Type</div>
+                <div class="di-value">{{ details.type }}</div>
+            </div>
+            <div class="detail-item">
+                <div class="di-label">⚠️ Warning</div>
+                <div class="di-value">{{ details.warning }}</div>
+            </div>
+        </div>
+        <div class="warning-box">
+            ⚠️ {{ details.warning }}
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        🚨 This is AI-generated information only.
+        Always consult a licensed doctor before
+        taking any medication.
+    </div>
+    {% endif %}
+
+</div>
+</body>
+</html>
