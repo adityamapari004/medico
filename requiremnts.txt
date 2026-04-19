@@ -2,3 +2,6 @@ pandas
 numpy 
 dill 
 scikit-learn
+gunicorn
+python-dotenv
+requests
