@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctor Finder</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: #1A73E8;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        .search-box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #1A73E8;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1557c0;
+        }
+
+        .results {
+            margin-top: 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .doctor-list {
+            width: 35%;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .doctor-card {
+            background: white;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+        }
+
+        .doctor-card h4 {
+            margin: 0;
+            color: #1A73E8;
+        }
+
+        .map-container {
+            width: 65%;
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>🏥 Doctor Finder</h2>
+</header>
+
+<div class="container">
+
+    <!-- 🔍 Search Form -->
+    <div class="search-box">
+        <form method="POST">
+            <input type="text" name="specialty"
+                   placeholder="Enter specialty (e.g. cardiologist)"
+                   value="{{ specialty or '' }}" required>
+
+            <input type="text" name="location"
+                   placeholder="Enter location (e.g. Aurangabad)"
+                   value="{{ location or '' }}" required>
+
+            <input type="number" name="limit"
+                   placeholder="No. of results (default 5)">
+
+            <button type="submit">find doctor</button>
+        </form>
+    </div>
+
+    {% if doctors %}
+
+    <!-- 📊 Results Section -->
+    <div class="results">
+
+        <!-- 👨‍⚕️ Doctor List -->
+        <div class="doctor-list">
+            {% for doc in doctors %}
+            <div class="doctor-card">
+                <h4>👨‍⚕️ {{ doc.name }}</h4>
+                <p>📍 {{ doc.full_address }}</p>
+                <p>🗂 {{ doc.type }}</p>
+
+                <a href="https://www.google.com/maps?q={{ doc.latitude }},{{ doc.longitude }}"
+                   target="_blank">
+                   Open in Maps →
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 🗺️ Map -->
+        <div class="map-container">
+            {{ map_html | safe }}
+        </div>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

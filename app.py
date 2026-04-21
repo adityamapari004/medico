@@ -1,5 +1,7 @@
 import os
 import sys
+from doctor_service import search_doctors
+from map_builder import build_doctor_map
 import pandas as pd
 from flask import (
     Flask,
@@ -105,6 +107,41 @@ def api_predict():
             "success": False,
             "error"  : str(e)
         }), 500
+    
+
+# ── DOCTOR SEARCH ROUTE ─────────────────────────
+# ── DOCTOR SEARCH ROUTE ─────────────────────────
+@app.route("/doctors", methods=["GET", "POST"])
+def doctors():
+    if request.method == "GET":
+        return render_template("doctor.html")
+
+    try:
+        specialty = request.form.get("specialty")
+        location  = request.form.get("location")
+
+        # Optional: replace radius with limit
+        ##limit = int(request.form.get("limit") or 5)
+        
+
+        logging.info(f"Searching {specialty} near {location}")
+
+        # ✅ Call updated function
+        doctor_list = search_doctors(specialty, location, )
+
+        # ✅ Build map
+        map_html = build_doctor_map(doctor_list)
+
+        return render_template(
+            "doctor.html",
+            doctors   = doctor_list,
+            map_html  = map_html,
+            specialty = specialty,
+            location  = location
+        )
+
+    except Exception as e:
+        raise CustomException(e, sys)
 
 
 # ── RUN ────────────────────────────────────────

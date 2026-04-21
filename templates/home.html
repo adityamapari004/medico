@@ -326,6 +326,50 @@
         </div>
     </div>
 
+
+    <div class="details-card">
+    <div class="details-title">🏥 Find Nearby Doctors</div>
+
+    <!-- 🔗 Go to Doctor Page -->
+    <form action="/doctors" method="POST" style="margin-bottom:20px;">
+        <input type="hidden" name="specialty" value="{{ result.specialty }}">
+        <input type="hidden" name="location" value="{{ location or 'Aurangabad' }}">
+
+        <button type="submit" class="btn-submit">
+            🔍 View {{ result.specialty }} Doctors Near {{ location or 'You' }}
+        </button>
+    </form>
+
+    <!-- ⚡ Quick Preview (Optional) -->
+    {% if doctors %}
+        <div style="margin-top:20px;">
+            <h4 style="color:#EEF4FF; margin-bottom:10px;">
+                👨‍⚕️ Top Doctors
+            </h4>
+
+            {% for doc in doctors[:3] %}
+            <div style="
+                background: rgba(255,255,255,0.03);
+                padding:12px;
+                border-radius:10px;
+                margin-bottom:10px;
+                border:1px solid rgba(255,255,255,0.05);
+            ">
+                <strong>{{ doc.name }}</strong><br>
+                <span style="font-size:12px; color:#5A7090;">
+                    📍 {{ doc.full_address }}
+                </span><br>
+
+                <a href="https://www.google.com/maps?q={{ doc.latitude }},{{ doc.longitude }}"
+                   target="_blank"
+                   style="color:#0ABFA3; font-size:13px;">
+                   Open in Maps →
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
     <div class="disclaimer">
         🚨 This is AI-generated information only.
         Always consult a licensed doctor before
