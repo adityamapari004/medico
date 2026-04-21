@@ -4,7 +4,7 @@ from src.logger import logging
 from src.exception import CustomException
 
 
-def search_doctors(specialty: str, location: str, limit: int = 5):
+def search_doctors(specialty: str, location: str, limit: int = 100):
     """
     Search doctors using OpenStreetMap Nominatim API
     """

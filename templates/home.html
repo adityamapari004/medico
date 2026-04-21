@@ -378,5 +378,927 @@
     {% endif %}
 
 </div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- MEDIBOT CHATBOT WIDGET                          -->
+<!-- ═══════════════════════════════════════════════ -->
+<style>
+    /* ── Floating Button ── */
+    #chat-fab {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+        width: 62px;
+        height: 62px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0ABFA3, #0891b2);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        box-shadow: 0 8px 32px rgba(10,191,163,0.45);
+        z-index: 9999;
+        transition: transform 0.3s, box-shadow 0.3s;
+        animation: fab-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes fab-pulse {
+        0%, 100% { box-shadow: 0 8px 32px rgba(10,191,163,0.45); }
+        50%       { box-shadow: 0 8px 48px rgba(10,191,163,0.7);  }
+    }
+    #chat-fab:hover {
+        transform: scale(1.12);
+        animation: none;
+        box-shadow: 0 12px 40px rgba(10,191,163,0.6);
+    }
+    #chat-fab .fab-badge {
+        position: absolute;
+        top: -3px;
+        right: -3px;
+        background: #ef4444;
+        color: #fff;
+        font-size: 10px;
+        font-weight: 700;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #070E1C;
+        opacity: 1;
+        transition: opacity 0.3s;
+    }
+
+    /* ── Chat Window ── */
+    #chat-window {
+        position: fixed;
+        bottom: 108px;
+        right: 32px;
+        width: 380px;
+        max-height: 580px;
+        background: rgba(11,20,40,0.97);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border: 1px solid rgba(10,191,163,0.25);
+        border-radius: 24px;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 0 1px rgba(10,191,163,0.1);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        z-index: 9998;
+        transform: scale(0.85) translateY(20px);
+        opacity: 0;
+        pointer-events: none;
+        transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+    }
+    #chat-window.open {
+        transform: scale(1) translateY(0);
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    /* ── Header ── */
+    .chat-header {
+        background: linear-gradient(135deg, rgba(10,191,163,0.2), rgba(8,145,178,0.15));
+        border-bottom: 1px solid rgba(10,191,163,0.2);
+        padding: 18px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-shrink: 0;
+    }
+    .chat-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0ABFA3, #0891b2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+        position: relative;
+    }
+    .chat-avatar::after {
+        content: '';
+        position: absolute;
+        bottom: 1px;
+        right: 1px;
+        width: 10px;
+        height: 10px;
+        background: #22c55e;
+        border-radius: 50%;
+        border: 2px solid #0b1428;
+    }
+    .chat-header-info h3 {
+        font-family: 'Syne', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #EEF4FF;
+        margin-bottom: 2px;
+    }
+    .chat-header-info p {
+        font-size: 11px;
+        color: #0ABFA3;
+    }
+    .chat-close {
+        margin-left: auto;
+        background: rgba(255,255,255,0.06);
+        border: none;
+        color: #5A7090;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+        flex-shrink: 0;
+    }
+    .chat-close:hover { background: rgba(255,255,255,0.12); color: #EEF4FF; }
+
+    /* ── Messages ── */
+    .chat-messages {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        min-height: 0;
+        scroll-behavior: smooth;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: rgba(10,191,163,0.3); border-radius: 4px; }
+
+    .chat-bubble {
+        max-width: 88%;
+        padding: 12px 16px;
+        border-radius: 18px;
+        font-size: 14px;
+        line-height: 1.55;
+        word-break: break-word;
+        animation: bubble-in 0.3s ease-out;
+    }
+    @keyframes bubble-in {
+        from { opacity: 0; transform: translateY(8px) scale(0.96); }
+        to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .bot-bubble {
+        background: rgba(17,30,53,0.9);
+        border: 1px solid rgba(10,191,163,0.18);
+        color: #C8D8E8;
+        align-self: flex-start;
+        border-bottom-left-radius: 6px;
+    }
+    .bot-bubble strong { color: #EEF4FF; }
+    .bot-bubble a { color: #0ABFA3; text-decoration: underline; }
+    .bot-bubble em { color: #5A7090; font-style: italic; }
+    .user-bubble {
+        background: linear-gradient(135deg, #0ABFA3, #0891b2);
+        color: #070E1C;
+        align-self: flex-end;
+        border-bottom-right-radius: 6px;
+        font-weight: 500;
+    }
+
+    /* ── Typing indicator ── */
+    .typing-indicator {
+        display: flex;
+        gap: 5px;
+        align-items: center;
+        padding: 14px 18px;
+        background: rgba(17,30,53,0.9);
+        border: 1px solid rgba(10,191,163,0.18);
+        border-radius: 18px;
+        border-bottom-left-radius: 6px;
+        align-self: flex-start;
+        animation: bubble-in 0.3s ease-out;
+    }
+    .typing-dot {
+        width: 7px;
+        height: 7px;
+        background: #0ABFA3;
+        border-radius: 50%;
+        animation: typing-bounce 1.2s ease-in-out infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing-bounce {
+        0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+        30%            { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ── Quick replies ── */
+    .quick-replies {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 0 16px 12px;
+        flex-shrink: 0;
+    }
+    .quick-chip {
+        background: rgba(10,191,163,0.08);
+        border: 1px solid rgba(10,191,163,0.3);
+        color: #0ABFA3;
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.2s;
+        white-space: nowrap;
+        font-family: 'DM Sans', sans-serif;
+    }
+    .quick-chip:hover {
+        background: rgba(10,191,163,0.18);
+        border-color: #0ABFA3;
+        transform: translateY(-1px);
+    }
+
+    /* ── Input bar ── */
+    .chat-input-bar {
+        border-top: 1px solid rgba(255,255,255,0.06);
+        padding: 14px 16px;
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+        flex-shrink: 0;
+    }
+    #chat-input {
+        flex: 1;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-radius: 14px;
+        padding: 10px 14px;
+        color: #EEF4FF;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        outline: none;
+        resize: none;
+        max-height: 100px;
+        min-height: 40px;
+        transition: border-color 0.2s;
+        line-height: 1.4;
+    }
+    #chat-input:focus { border-color: rgba(10,191,163,0.5); }
+    #chat-input::placeholder { color: #3A5070; }
+    #chat-input.listening {
+        border-color: rgba(239,68,68,0.6);
+        background: rgba(239,68,68,0.05);
+    }
+    #chat-send {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0ABFA3, #0891b2);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+        transition: transform 0.2s, opacity 0.2s;
+    }
+    #chat-send:hover { transform: scale(1.1); }
+    #chat-send:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* ── Mic button ── */
+    #chat-mic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.06);
+        border: 1px solid rgba(255,255,255,0.12);
+        color: #8AAABB;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 17px;
+        flex-shrink: 0;
+        transition: all 0.25s;
+        position: relative;
+    }
+    #chat-mic:hover { background: rgba(10,191,163,0.15); border-color: rgba(10,191,163,0.4); color: #0ABFA3; }
+    #chat-mic.active {
+        background: rgba(239,68,68,0.18);
+        border-color: rgba(239,68,68,0.6);
+        color: #ef4444;
+        animation: mic-pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes mic-pulse {
+        0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.4); }
+        50%       { box-shadow: 0 0 0 10px rgba(239,68,68,0); }
+    }
+
+    /* ── TTS toggle ── */
+    #chat-tts {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: #3A5070;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+        transition: all 0.2s;
+        margin-bottom: 4px;
+    }
+    #chat-tts.tts-on { border-color: rgba(10,191,163,0.5); color: #0ABFA3; background: rgba(10,191,163,0.1); }
+    #chat-tts:hover { border-color: rgba(10,191,163,0.4); color: #0ABFA3; }
+
+    /* ── Voice overlay ── */
+    #voice-overlay {
+        display: none;
+        position: absolute;
+        inset: 0;
+        background: rgba(7,14,28,0.95);
+        backdrop-filter: blur(8px);
+        z-index: 10;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+        border-radius: 24px;
+    }
+    #voice-overlay.show { display: flex; }
+    .voice-waveform {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        height: 56px;
+    }
+    .voice-bar {
+        width: 5px;
+        background: linear-gradient(180deg, #0ABFA3, #0891b2);
+        border-radius: 4px;
+        animation: wave-anim 1s ease-in-out infinite;
+        height: 10px;
+    }
+    .voice-bar:nth-child(1)  { animation-delay: 0.0s; }
+    .voice-bar:nth-child(2)  { animation-delay: 0.1s; }
+    .voice-bar:nth-child(3)  { animation-delay: 0.2s; }
+    .voice-bar:nth-child(4)  { animation-delay: 0.3s; }
+    .voice-bar:nth-child(5)  { animation-delay: 0.4s; }
+    .voice-bar:nth-child(6)  { animation-delay: 0.3s; }
+    .voice-bar:nth-child(7)  { animation-delay: 0.2s; }
+    .voice-bar:nth-child(8)  { animation-delay: 0.1s; }
+    .voice-bar:nth-child(9)  { animation-delay: 0.0s; }
+    @keyframes wave-anim {
+        0%, 100% { height: 10px; opacity: 0.5; }
+        50%       { height: 48px; opacity: 1; }
+    }
+    .voice-label {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        color: #8AAABB;
+        letter-spacing: 0.04em;
+    }
+    .voice-label span { color: #0ABFA3; font-weight: 600; }
+    .voice-cancel {
+        background: rgba(239,68,68,0.15);
+        border: 1px solid rgba(239,68,68,0.35);
+        color: #ef4444;
+        border-radius: 20px;
+        padding: 8px 20px;
+        font-size: 13px;
+        cursor: pointer;
+        font-family: 'DM Sans', sans-serif;
+        transition: all 0.2s;
+    }
+    .voice-cancel:hover { background: rgba(239,68,68,0.28); }
+
+    /* ── Speaking indicator on bot bubble ── */
+    .bot-bubble.speaking {
+        border-color: rgba(10,191,163,0.5);
+        box-shadow: 0 0 12px rgba(10,191,163,0.2);
+    }
+
+    /* ── Voice support warning ── */
+    .voice-unsupported {
+        text-align: center;
+        font-size: 11px;
+        color: #4A6080;
+        padding: 4px 0;
+    }
+
+    /* ── Disclaimer strip ── */
+    .chat-disclaimer {
+        text-align: center;
+        font-size: 10px;
+        color: #2A4060;
+        padding: 6px 16px;
+        border-top: 1px solid rgba(255,255,255,0.04);
+        flex-shrink: 0;
+    }
+
+    /* ── Mobile ── */
+    @media (max-width: 480px) {
+        #chat-window { width: calc(100vw - 20px); right: 10px; bottom: 90px; }
+        #chat-fab    { right: 20px; bottom: 20px; }
+    }
+</style>
+
+<!-- FAB Button -->
+<button id="chat-fab" onclick="toggleChat()" title="Chat with MediBot">
+    <span id="fab-icon">💬</span>
+    <span class="fab-badge" id="fab-badge">1</span>
+</button>
+
+<!-- Chat Window -->
+<div id="chat-window">
+    <!-- Header -->
+    <div class="chat-header">
+        <div class="chat-avatar">🤖</div>
+        <div class="chat-header-info">
+            <h3>MediBot</h3>
+            <p>● Online · AI Health Assistant</p>
+        </div>
+        <button class="chat-close" onclick="closeChat()" title="Close">✕</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chat-messages"></div>
+
+    <!-- Quick reply chips -->
+    <div class="quick-replies" id="quick-replies">
+        <button class="quick-chip" onclick="sendQuick('I have a fever')">🌡️ Fever</button>
+        <button class="quick-chip" onclick="sendQuick('I have a headache')">🧠 Headache</button>
+        <button class="quick-chip" onclick="sendQuick('I have a cold and cough')">🤧 Cold</button>
+        <button class="quick-chip" onclick="sendQuick('Find a doctor near me')">🏥 Find Doctor</button>
+        <button class="quick-chip" onclick="sendQuick('I feel anxious')">🧘 Anxiety</button>
+        <button class="quick-chip" onclick="sendQuick('What medicine for stomach pain?')">💊 Medicine</button>
+    </div>
+
+    <!-- Voice listening overlay -->
+    <div id="voice-overlay">
+        <div class="voice-waveform">
+            <div class="voice-bar"></div><div class="voice-bar"></div><div class="voice-bar"></div>
+            <div class="voice-bar"></div><div class="voice-bar"></div><div class="voice-bar"></div>
+            <div class="voice-bar"></div><div class="voice-bar"></div><div class="voice-bar"></div>
+        </div>
+        <div class="voice-label">🎙️ <span>Listening…</span> speak your question</div>
+        <button class="voice-cancel" onclick="stopVoice()">✕ Cancel</button>
+    </div>
+
+    <!-- Input bar -->
+    <div class="chat-input-bar">
+        <button id="chat-mic" onclick="toggleVoice()" title="Voice input">🎙️</button>
+        <textarea id="chat-input" placeholder="Ask me about symptoms, medicines…" rows="1"></textarea>
+        <button id="chat-tts" onclick="toggleTTS()" title="Toggle voice response" class="tts-on">🔊</button>
+        <button id="chat-send" onclick="sendMessage()" title="Send">➤</button>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="chat-disclaimer">🎙️ Voice enabled · ⚠️ Not a substitute for professional medical advice</div>
+</div>
+
+<script>
+// ─── MediBot Widget ─────────────────────────────────────────────────
+const chatWindow   = document.getElementById('chat-window');
+const chatMessages = document.getElementById('chat-messages');
+const chatInput    = document.getElementById('chat-input');
+const chatSend     = document.getElementById('chat-send');
+const fabIcon      = document.getElementById('fab-icon');
+const fabBadge     = document.getElementById('fab-badge');
+const quickReplies = document.getElementById('quick-replies');
+
+let isOpen = false;
+let isWaiting = false;
+
+// ── Open / Close ────────────────────────────────────────────────────
+function openChat() {
+    isOpen = true;
+    chatWindow.classList.add('open');
+    fabIcon.textContent = '✕';
+    fabBadge.style.opacity = '0';
+    setTimeout(() => chatInput.focus(), 350);
+    if (chatMessages.children.length === 0) {
+        addBotMessage(
+            "👋 Hi! I'm **MediBot**, your AI health assistant.\n\n" +
+            "I can help with **symptoms**, **medicines**, **finding doctors**, and more.\n\n" +
+            "What's on your mind today? 😊"
+        );
+    }
+    scrollToBottom();
+}
+
+function closeChat() {
+    isOpen = false;
+    chatWindow.classList.remove('open');
+    fabIcon.textContent = '💬';
+}
+
+function toggleChat() {
+    isOpen ? closeChat() : openChat();
+}
+
+// ── Send message ────────────────────────────────────────────────────
+async function sendMessage() {
+    const text = chatInput.value.trim();
+    if (!text || isWaiting) return;
+
+    addUserMessage(text);
+    chatInput.value = '';
+    autoResize(chatInput);
+    quickReplies.style.display = 'none';
+    scrollToBottom();
+
+    const typingEl = addTypingIndicator();
+    isWaiting = true;
+    chatSend.disabled = true;
+
+    try {
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        typingEl.remove();
+        addBotMessage(data.reply || 'Sorry, I had trouble with that. Please try again.');
+    } catch (err) {
+        typingEl.remove();
+        addBotMessage('⚠️ Connection error. Please check your internet and try again.');
+    } finally {
+        isWaiting = false;
+        chatSend.disabled = false;
+        scrollToBottom();
+    }
+}
+
+function sendQuick(text) {
+    chatInput.value = text;
+    sendMessage();
+}
+
+// ── DOM helpers ──────────────────────────────────────────────────────
+function addUserMessage(text) {
+    const el = document.createElement('div');
+    el.className = 'chat-bubble user-bubble';
+    el.textContent = text;
+    chatMessages.appendChild(el);
+}
+
+function addBotMessage(text) {
+    const el = document.createElement('div');
+    el.className = 'chat-bubble bot-bubble';
+    el.innerHTML = renderMarkdown(text);
+    chatMessages.appendChild(el);
+    // Make internal links work without closing chat
+    el.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', () => closeChat());
+    });
+}
+
+function addTypingIndicator() {
+    const el = document.createElement('div');
+    el.className = 'typing-indicator';
+    el.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>';
+    chatMessages.appendChild(el);
+    scrollToBottom();
+    return el;
+}
+
+function scrollToBottom() {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// ── Lightweight Markdown renderer ───────────────────────────────────
+function escHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderMarkdown(text) {
+    // Split on markdown tokens, escape plain text, wrap tokens in HTML
+    // Order: links → bold → italic → newlines
+    const linkRe   = /\[([^\]]+)\]\(([^)]+)\)/g;
+    const boldRe   = /\*\*([\s\S]*?)\*\*/g;
+    const italicRe = /(?:\*|_)([\s\S]*?)(?:\*|_)/g;
+
+    // Process in a single pass using a replacer pipeline
+    let html = text;
+
+    // 1. Temporarily protect links
+    const links = [];
+    html = html.replace(linkRe, (_, label, href) => {
+        const idx = links.length;
+        links.push(`<a href="${escHtml(href)}" target="_self">${escHtml(label)}</a>`);
+        return `\x00LINK${idx}\x00`;
+    });
+
+    // 2. Escape raw HTML in remaining text
+    html = escHtml(html);
+
+    // 3. Bold
+    html = html.replace(/\*\*([\s\S]*?)\*\*/g, '<strong>$1</strong>');
+
+    // 4. Italic (single * or _)
+    html = html.replace(/(?:\*|_)([\s\S]*?)(?:\*|_)/g, '<em>$1</em>');
+
+    // 5. Newlines
+    html = html.replace(/\n/g, '<br>');
+
+    // 6. Restore protected links
+    html = html.replace(/\x00LINK(\d+)\x00/g, (_, i) => links[parseInt(i)]);
+
+    return html;
+}
+
+// ── Auto-resize textarea ─────────────────────────────────────────────
+function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+}
+
+chatInput.addEventListener('input', () => autoResize(chatInput));
+chatInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+    }
+});
+
+// ── Close on outside click ───────────────────────────────────────────
+document.addEventListener('click', e => {
+    if (isOpen &&
+        !chatWindow.contains(e.target) &&
+        !document.getElementById('chat-fab').contains(e.target)) {
+        closeChat();
+    }
+});
+
+// ════════════════════════════════════════════════════════════════════
+// ── VOICE ASSISTANT ─────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════
+const chatMic      = document.getElementById('chat-mic');
+const chatTTS      = document.getElementById('chat-tts');
+const voiceOverlay = document.getElementById('voice-overlay');
+
+let recognition     = null;
+let isListening     = false;
+let ttsEnabled      = true;   // voice output on by default
+let currentUtterance = null;
+let speakingBubble  = null;
+
+// ── TTS Toggle ────────────────────────────────────────────────────────
+function toggleTTS() {
+    ttsEnabled = !ttsEnabled;
+    chatTTS.classList.toggle('tts-on', ttsEnabled);
+    chatTTS.title = ttsEnabled ? 'Voice response ON' : 'Voice response OFF';
+    chatTTS.textContent = ttsEnabled ? '🔊' : '🔇';
+    if (!ttsEnabled && window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+        if (speakingBubble) { speakingBubble.classList.remove('speaking'); speakingBubble = null; }
+    }
+}
+
+// ── Speak bot reply ──────────────────────────────────────────────────
+function speakText(text, bubbleEl) {
+    if (!ttsEnabled || !window.speechSynthesis) return;
+
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+    if (speakingBubble) speakingBubble.classList.remove('speaking');
+
+    // Strip markdown formatting for clean speech
+    const clean = text
+        .replace(/\*\*([^*]+)\*\*/g, '$1')
+        .replace(/\*([^*]+)\*/g, '$1')
+        .replace(/_([^_]+)_/g, '$1')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/#+\s*/g, '')
+        .replace(/•/g, '')
+        .replace(/🩺|💊|🏥|🚨|🌡️|🧠|🤧|🫃|🩸|❤️|🩹|🧘|🤖|🔬|👋|💙|🤔|💡|⚠️|🎙️|🔊|🔇|😊/g, '')
+        .replace(/\n+/g, '. ')
+        .replace(/\.\s*\./g, '.')
+        .trim();
+
+    if (!clean) return;
+
+    const utter = new SpeechSynthesisUtterance(clean);
+    currentUtterance = utter;
+
+    // Choose a pleasant medical/assistant voice
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find(v =>
+        v.name.includes('Google') && v.lang.startsWith('en')
+    ) || voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'))
+      || voices.find(v => v.lang.startsWith('en'));
+    if (preferred) utter.voice = preferred;
+
+    utter.rate  = 0.95;
+    utter.pitch = 1.05;
+    utter.volume = 1;
+
+    speakingBubble = bubbleEl;
+    if (bubbleEl) bubbleEl.classList.add('speaking');
+
+    utter.onend = () => {
+        if (speakingBubble) speakingBubble.classList.remove('speaking');
+        speakingBubble = null;
+        currentUtterance = null;
+    };
+    utter.onerror = () => {
+        if (speakingBubble) speakingBubble.classList.remove('speaking');
+        speakingBubble = null;
+    };
+
+    window.speechSynthesis.speak(utter);
+}
+
+// Patch addBotMessage to trigger TTS
+const _origAddBotMessage = addBotMessage;
+window.addBotMessage = function(text) {
+    _origAddBotMessage(text);
+    const bubbles = chatMessages.querySelectorAll('.bot-bubble');
+    const lastBubble = bubbles[bubbles.length - 1];
+    speakText(text, lastBubble);
+};
+
+// Override addBotMessage at runtime (since it's defined above)
+// We'll wrap via a flag used in the fetch callback — patch sendMessage's bot response:
+// Actually reassign globally:
+window.__medibot_tts_enabled = () => ttsEnabled;
+window.__medibot_speakText   = speakText;
+
+// ── Speech Recognition (Voice Input) ────────────────────────────────
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const hasVoiceInput = !!SpeechRecognition;
+
+if (!hasVoiceInput) {
+    chatMic.title = 'Voice input not supported in this browser';
+    chatMic.style.opacity = '0.3';
+    chatMic.style.cursor  = 'not-allowed';
+}
+
+function initRecognition() {
+    if (!SpeechRecognition) return null;
+    const r = new SpeechRecognition();
+    r.continuous      = false;
+    r.interimResults  = true;
+    r.lang            = 'en-IN';
+    r.maxAlternatives = 1;
+
+    r.onstart = () => {
+        isListening = true;
+        voiceOverlay.classList.add('show');
+        chatMic.classList.add('active');
+        chatInput.classList.add('listening');
+        chatInput.placeholder = '🎙️ Listening…';
+    };
+
+    r.onresult = (event) => {
+        let interim = '';
+        let final   = '';
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            const t = event.results[i][0].transcript;
+            event.results[i].isFinal ? (final += t) : (interim += t);
+        }
+        chatInput.value = final || interim;
+        autoResize(chatInput);
+    };
+
+    r.onend = () => {
+        isListening = false;
+        voiceOverlay.classList.remove('show');
+        chatMic.classList.remove('active');
+        chatInput.classList.remove('listening');
+        chatInput.placeholder = 'Ask me about symptoms, medicines…';
+
+        if (chatInput.value.trim()) {
+            // Small delay so user sees what was transcribed
+            setTimeout(() => sendMessage(), 350);
+        }
+    };
+
+    r.onerror = (event) => {
+        isListening = false;
+        voiceOverlay.classList.remove('show');
+        chatMic.classList.remove('active');
+        chatInput.classList.remove('listening');
+        chatInput.placeholder = 'Ask me about symptoms, medicines…';
+
+        if (event.error === 'not-allowed') {
+            addBotMessage('🎙️ Microphone access was denied. Please allow microphone permission in your browser and try again.');
+        } else if (event.error !== 'aborted' && event.error !== 'no-speech') {
+            addBotMessage(`⚠️ Voice error: ${event.error}. Please try typing instead.`);
+        }
+    };
+
+    return r;
+}
+
+function toggleVoice() {
+    if (!hasVoiceInput) {
+        addBotMessage('🎙️ Voice input is not supported in this browser. Please try Chrome or Edge.');
+        openChat();
+        return;
+    }
+    isListening ? stopVoice() : startVoice();
+}
+
+function startVoice() {
+    if (!hasVoiceInput || isListening) return;
+    // Stop TTS if it's playing before listening
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    if (!isOpen) openChat();
+    recognition = initRecognition();
+    if (recognition) recognition.start();
+}
+
+function stopVoice() {
+    if (recognition) {
+        recognition.abort();
+        recognition = null;
+    }
+    isListening = false;
+    voiceOverlay.classList.remove('show');
+    chatMic.classList.remove('active');
+    chatInput.classList.remove('listening');
+    chatInput.placeholder = 'Ask me about symptoms, medicines…';
+}
+
+// Preload voices (Chrome loads them async)
+if (window.speechSynthesis) {
+    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
+    window.speechSynthesis.getVoices();
+}
+
+// Stop speech when chat closes
+const _origCloseChat = closeChat;
+closeChat = function() {
+    _origCloseChat();
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    stopVoice();
+};
+
+// ── Override sendMessage to patch TTS into bot replies ────────────────
+const _origSendMessage = sendMessage;
+sendMessage = async function() {
+    const text = chatInput.value.trim();
+    if (!text || isWaiting) return;
+
+    // Cancel any ongoing speech before new query
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+    if (speakingBubble) { speakingBubble.classList.remove('speaking'); speakingBubble = null; }
+
+    addUserMessage(text);
+    chatInput.value = '';
+    autoResize(chatInput);
+    quickReplies.style.display = 'none';
+    scrollToBottom();
+
+    const typingEl = addTypingIndicator();
+    isWaiting = true;
+    chatSend.disabled = true;
+
+    try {
+        const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        typingEl.remove();
+
+        const replyText = data.reply || 'Sorry, I had trouble with that. Please try again.';
+
+        // Create bot bubble manually so we can reference it for TTS
+        const el = document.createElement('div');
+        el.className = 'chat-bubble bot-bubble';
+        el.innerHTML = renderMarkdown(replyText);
+        chatMessages.appendChild(el);
+        el.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', () => closeChat()));
+
+        // Speak the reply
+        speakText(replyText, el);
+
+    } catch (err) {
+        typingEl.remove();
+        const errText = '⚠️ Connection error. Please check your internet and try again.';
+        const el = document.createElement('div');
+        el.className = 'chat-bubble bot-bubble';
+        el.innerHTML = renderMarkdown(errText);
+        chatMessages.appendChild(el);
+    } finally {
+        isWaiting = false;
+        chatSend.disabled = false;
+        scrollToBottom();
+    }
+};
+</script>
+
+
 </body>
 </html>
