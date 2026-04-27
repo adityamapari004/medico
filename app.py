@@ -31,7 +31,8 @@ from src.pipeline.prediction_pipeline import (
 app = Flask(__name__)
 app.secret_key = 'super_secret_medico_key'
 # Database Configuration (PostgreSQL)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:adii1118@localhost:5432/medico')
+DATABASE_URL = os.environ.get('postgresql://medico_451m_user:R0CswnfwZw8YiGaHoINl4zSCioBrW6iV@dpg-d7nmeoj7uimc73d28jkg-a/medico_451m')
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('artifacts', 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
