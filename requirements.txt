@@ -1,14 +1,10 @@
-pandas 
-numpy 
-dill 
+pandas
+numpy
+dill
 scikit-learn==1.8.0
 gunicorn
 python-dotenv
 requests
 flask
 folium
-flask-sqlalchemy
-pymysql
-flask-login
 werkzeug
-psycopg2-binary
