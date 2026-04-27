@@ -2,15 +2,23 @@ import os
 import sys
 import re
 from datetime import datetime
-from doctor_service import search_doctors
+from doctor_service import search_doctors, search_pharmacies
 from map_builder import build_doctor_map
 import pandas as pd
 from flask import (
     Flask,
     request,
     render_template,
-    jsonify
+    jsonify,
+    redirect,
+    url_for,
+    flash,
+    send_from_directory
 )
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 
 from src.logger import logging
 from src.exception import CustomException
@@ -21,17 +29,54 @@ from src.pipeline.prediction_pipeline import (
 
 # ── Flask App ──────────────────────────────────
 app = Flask(__name__)
+app.secret_key = 'super_secret_medico_key'
+# Database Configuration (PostgreSQL)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://postgres:adii1118@localhost:5432/medico')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = os.path.join('artifacts', 'uploads')
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+db = SQLAlchemy(app)
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+class User(UserMixin, db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150), nullable=False)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    records = db.relationship('MedicalRecord', backref='user', lazy=True)
+
+class MedicalRecord(db.Model):
+    __tablename__ = 'medical_records'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    record_type = db.Column(db.String(50), nullable=False)
+    description = db.Column(db.String(255))
+    file_path = db.Column(db.String(255))
+    date_added = db.Column(db.DateTime, default=datetime.utcnow)
+
+with app.app_context():
+    db.create_all()
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 # ── HOME ROUTE ─────────────────────────────────
 @app.route("/", methods=["GET"])
 def index():
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
     logging.info("Home page accessed")
     return render_template("index.html")
 
 
 # ── PREDICT ROUTE ───────────────────────────────
 @app.route("/predict", methods=["GET", "POST"])
+@login_required
 def predict():
     if request.method == "GET":
         return render_template("home.html")
@@ -59,6 +104,11 @@ def predict():
         )
 
         logging.info(f"Prediction result: {result}")
+        
+        emergency_alert = False
+        severity = request.form.get("severity", "")
+        if severity.lower() == "severe":
+            emergency_alert = True
 
         return render_template(
             "home.html",
@@ -67,7 +117,8 @@ def predict():
             symptoms  = request.form.get("symptoms"),
             age_group = request.form.get("age_group"),
             severity  = request.form.get("severity"),
-            allergies = request.form.get("allergies")
+            allergies = request.form.get("allergies"),
+            emergency_alert = emergency_alert
         )
 
     except Exception as e:
@@ -77,6 +128,7 @@ def predict():
 
 # ── API ROUTE (JSON) ────────────────────────────
 @app.route("/api/predict", methods=["POST"])
+@login_required
 def api_predict():
     try:
         # Get JSON data
@@ -95,13 +147,19 @@ def api_predict():
         details  = pipeline.get_medicine_details(
             result["medicine"]
         )
+        
+        emergency_alert = False
+        if body.get("severity", "").lower() == "severe":
+            emergency_alert = True
 
         return jsonify({
             "success"   : True,
             "medicine"  : result["medicine"],
             "specialty" : result["specialty"],
             "confidence": result["confidence"],
-            "details"   : details
+            "details"   : details,
+            "emergency_alert": emergency_alert
+
         })
 
     except Exception as e:
@@ -145,6 +203,155 @@ def doctors():
     except Exception as e:
         raise CustomException(e, sys)
 
+# ── PHARMACY SEARCH ROUTE ─────────────────────────
+@app.route("/pharmacies", methods=["GET", "POST"])
+def pharmacies():
+    if request.method == "GET":
+        return render_template("pharmacy.html")
+
+    try:
+        location  = request.form.get("location")
+        logging.info(f"Searching pharmacies near {location}")
+
+        pharmacy_list = search_pharmacies(location)
+        map_html = build_doctor_map(pharmacy_list) # Reusing map builder
+
+        return render_template(
+            "pharmacy.html",
+            pharmacies = pharmacy_list,
+            map_html  = map_html,
+            location  = location
+        )
+    except Exception as e:
+        raise CustomException(e, sys)
+
+# ── AUTHENTICATION ROUTES ───────────────────────
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(email=email).first()
+        if user:
+            flash('Email address already exists')
+            return redirect(url_for('register'))
+            
+        new_user = User(name=name, email=email, password=generate_password_hash(password, method='pbkdf2:sha256'))
+        db.session.add(new_user)
+        db.session.commit()
+        
+        login_user(new_user)
+        return redirect(url_for('predict'))
+        
+    return render_template('register.html')
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        
+        user = User.query.filter_by(email=email).first()
+        
+        if not user or not check_password_hash(user.password, password):
+            flash('Please check your login details and try again.')
+            return redirect(url_for('login'))
+            
+        login_user(user)
+        return redirect(url_for('predict'))
+        
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+# ── DASHBOARD (MEDICAL RECORDS) ─────────────────
+@app.route('/dashboard', methods=['GET', 'POST'])
+@login_required
+def dashboard():
+    if request.method == 'POST':
+        record_type = request.form.get('record_type')
+        description = request.form.get('description')
+        file = request.files.get('file')
+        
+        file_path = None
+        if file and file.filename != '':
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            
+        new_record = MedicalRecord(
+            user_id=current_user.id,
+            record_type=record_type,
+            description=description,
+            file_path=file_path
+        )
+        db.session.add(new_record)
+        db.session.commit()
+        flash('Record added successfully')
+        return redirect(url_for('dashboard'))
+        
+    records = MedicalRecord.query.filter_by(user_id=current_user.id).order_by(MedicalRecord.date_added.desc()).all()
+    return render_template('dashboard.html', user=current_user, records=records)
+
+@app.route('/uploads/<path:filename>')
+@login_required
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/view_record/<int:record_id>')
+@login_required
+def view_record(record_id):
+    record = MedicalRecord.query.get_or_404(record_id)
+    if record.user_id != current_user.id:
+        flash('Unauthorized access')
+        return redirect(url_for('dashboard'))
+    
+    if not record.file_path:
+        flash('No file associated with this record')
+        return redirect(url_for('dashboard'))
+        
+    filename = os.path.basename(record.file_path)
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/edit_record/<int:record_id>', methods=['POST'])
+@login_required
+def edit_record(record_id):
+    record = MedicalRecord.query.get_or_404(record_id)
+    if record.user_id != current_user.id:
+        return jsonify({'success': False, 'error': 'Unauthorized'}), 403
+    
+    record.record_type = request.form.get('record_type', record.record_type)
+    record.description = request.form.get('description', record.description)
+    
+    file = request.files.get('file')
+    if file and file.filename != '':
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        record.file_path = file_path
+        
+    db.session.commit()
+    flash('Record updated successfully')
+    return redirect(url_for('dashboard'))
+
+@app.route('/delete_record/<int:record_id>')
+@login_required
+def delete_record(record_id):
+    record = MedicalRecord.query.get_or_404(record_id)
+    if record.user_id != current_user.id:
+        flash('Unauthorized access')
+        return redirect(url_for('dashboard'))
+    
+    db.session.delete(record)
+    db.session.commit()
+    flash('Record deleted')
+    return redirect(url_for('dashboard'))
 
 
 # ── CHATBOT ROUTE ───────────────────────────────────────────────

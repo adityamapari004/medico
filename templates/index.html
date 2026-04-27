@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MediGuide</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             background: #070E1C;
             color: #C8D8E8;
@@ -16,14 +23,16 @@
             align-items: center;
             justify-content: center;
         }
+
         .hero {
             text-align: center;
             padding: 40px 20px;
         }
+
         .badge {
             display: inline-block;
-            background: rgba(10,191,163,0.1);
-            border: 1px solid rgba(10,191,163,0.3);
+            background: rgba(10, 191, 163, 0.1);
+            border: 1px solid rgba(10, 191, 163, 0.3);
             color: #0ABFA3;
             padding: 6px 18px;
             border-radius: 100px;
@@ -32,6 +41,7 @@
             text-transform: uppercase;
             margin-bottom: 28px;
         }
+
         h1 {
             font-family: 'Syne', sans-serif;
             font-size: clamp(40px, 7vw, 80px);
@@ -40,7 +50,11 @@
             line-height: 1.1;
             margin-bottom: 20px;
         }
-        h1 span { color: #0ABFA3; }
+
+        h1 span {
+            color: #0ABFA3;
+        }
+
         p {
             font-size: 18px;
             color: #5A7090;
@@ -48,6 +62,7 @@
             margin: 0 auto 40px;
             line-height: 1.7;
         }
+
         .btn {
             background: #0ABFA3;
             color: #070E1C;
@@ -60,38 +75,89 @@
             transition: all 0.3s;
             display: inline-block;
         }
+
         .btn:hover {
             background: #EEF4FF;
             transform: translateY(-3px);
         }
+
         .stats {
             display: flex;
             gap: 60px;
             justify-content: center;
             margin-top: 60px;
             padding-top: 40px;
-            border-top: 1px solid rgba(255,255,255,0.06);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
         }
+
         .stat-num {
             font-family: 'Syne', sans-serif;
             font-size: 36px;
             font-weight: 800;
             color: #EEF4FF;
         }
-        .stat-num span { color: #0ABFA3; }
+
+        .stat-num span {
+            color: #0ABFA3;
+        }
+
         .stat-label {
             font-size: 12px;
             color: #5A7090;
             margin-top: 4px;
         }
+
+        .top-nav {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .top-nav a {
+            color: #EEF4FF;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
+            opacity: 0.8;
+        }
+
+        .top-nav a:hover {
+            color: #0ABFA3;
+            opacity: 1;
+        }
+
+        .logout-link {
+            color: #FF6B6B !important;
+        }
     </style>
 </head>
+
 <body>
+    <nav class="top-nav">
+        <a href="/doctors">Doctors</a>
+        <a href="/predict">Symptom Check</a>
+        <a href="/pharmacies">Pharmaceutical</a>
+        <a href="dashboard">dashboard</a>
+        <a href="tel:108"
+            style="color: #FF6B6B; font-weight: 700; border: 1px solid rgba(255,107,107,0.3); padding: 5px 12px; border-radius: 8px;">🆘
+            Emergency</a>
+        <a href="/logout" class="logout-link">Logout</a>
+    </nav>
     <div class="hero">
         <div class="badge">🧬 AI Powered Healthcare</div>
         <h1>Smart <span>Medicine</span><br>Recommendation</h1>
         <p>Describe your symptoms and get instant medicine recommendations with nearby doctor locations.</p>
-        <a href="/predict" class="btn">Get Started →</a>
+
+        <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 40px;">
+            <a href="/predict" class="btn">Get Started →</a>
+            <a href="tel:108" class="btn"
+                style="background: rgba(255,107,107,0.1); border: 2px solid #FF6B6B; color: #FF6B6B;">Emergency Call</a>
+        </div>
+
         <div class="stats">
             <div>
                 <div class="stat-num">98<span>%</span></div>
@@ -108,4 +174,5 @@
         </div>
     </div>
 </body>
+
 </html>

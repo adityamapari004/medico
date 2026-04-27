@@ -273,8 +273,32 @@
         </form>
     </div>
 
+    <!-- EMERGENCY ALERT -->
+    {% if emergency_alert %}
+    <div style="background: rgba(239,68,68,0.15); border: 2px solid #ef4444; border-radius: 16px; padding: 24px; margin-bottom: 32px; text-align: center; animation: pulse-red 2s infinite;">
+        <style>
+            @keyframes pulse-red {
+                0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+                70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            }
+        </style>
+        <h2 style="color: #ef4444; font-family: 'Syne', sans-serif; font-size: 24px; margin-bottom: 12px;">🚨 EMERGENCY ALERT 🚨</h2>
+        <p style="color: #EEF4FF; font-size: 16px; margin-bottom: 20px;">Your symptoms indicate a potentially severe or life-threatening condition. Please seek immediate medical attention.</p>
+        <div style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+            <a href="tel:108" class="btn-submit" style="background: #ef4444; color: white; width: auto; text-decoration: none; display: inline-flex; align-items: center; margin-top: 0;">📞 Call Ambulance (108)</a>
+            <form action="/doctors" method="POST" style="margin: 0;">
+                <input type="hidden" name="specialty" value="Hospital">
+                <input type="hidden" name="location" value="Aurangabad"> <!-- Can be dynamic if location is tracked -->
+                <button type="submit" class="btn-submit" style="background: #EEF4FF; color: #070E1C; width: auto; margin-top: 0;">🏥 Find Nearby Hospitals</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
     <!-- RESULTS -->
     {% if result %}
+
     <div class="result-grid">
         <div class="result-card green">
             <div class="rc-label">💊 Recommended Medicine</div>
@@ -822,7 +846,14 @@
         <div class="chat-avatar">🤖</div>
         <div class="chat-header-info">
             <h3>MediBot</h3>
-            <p>● Online · AI Health Assistant</p>
+            <div style="display: flex; gap: 8px; align-items: center; margin-top: 4px;">
+                <p>● Online</p>
+                <select id="chat-lang" onchange="updateLang()" style="background: rgba(10,191,163,0.1); border: 1px solid rgba(10,191,163,0.3); color: #0ABFA3; font-size: 10px; padding: 2px 4px; border-radius: 4px; width: auto; height: auto; cursor: pointer; outline: none;">
+                    <option value="en-IN">English</option>
+                    <option value="hi-IN">Hindi (हिंदी)</option>
+                    <option value="mr-IN">Marathi (मराठी)</option>
+                </select>
+            </div>
         </div>
         <button class="chat-close" onclick="closeChat()" title="Close">✕</button>
     </div>
@@ -1091,11 +1122,19 @@ function speakText(text, bubbleEl) {
 
     // Choose a pleasant medical/assistant voice
     const voices = window.speechSynthesis.getVoices();
-    const preferred = voices.find(v =>
-        v.name.includes('Google') && v.lang.startsWith('en')
-    ) || voices.find(v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'))
-      || voices.find(v => v.lang.startsWith('en'));
+    const lang = document.getElementById('chat-lang').value;
+    
+    // Find voice for selected language
+    let preferred = voices.find(v => v.lang.startsWith(lang.split('-')[0]));
+    
+    // Fallbacks
+    if (!preferred) {
+        preferred = voices.find(v => v.name.includes('Google') && v.lang.startsWith('en')) 
+                    || voices.find(v => v.lang.startsWith('en'));
+    }
+    
     if (preferred) utter.voice = preferred;
+    utter.lang = lang;
 
     utter.rate  = 0.95;
     utter.pitch = 1.05;
@@ -1147,7 +1186,7 @@ function initRecognition() {
     const r = new SpeechRecognition();
     r.continuous      = false;
     r.interimResults  = true;
-    r.lang            = 'en-IN';
+    r.lang            = document.getElementById('chat-lang').value || 'en-IN';
     r.maxAlternatives = 1;
 
     r.onstart = () => {
@@ -1242,6 +1281,22 @@ closeChat = function() {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
     stopVoice();
 };
+
+// ── Language Update ────────────────────────────────────────────────
+function updateLang() {
+    const lang = document.getElementById('chat-lang').value;
+    const labels = {
+        'en-IN': { placeholder: 'Ask me about symptoms...', voiceLabel: 'Listening...' },
+        'hi-IN': { placeholder: 'मुझसे लक्षणों के बारे में पूछें...', voiceLabel: 'सुन रहा हूँ...' },
+        'mr-IN': { placeholder: 'मला लक्षणांबद्दल विचारा...', voiceLabel: 'ऐकत आहे...' }
+    };
+    
+    chatInput.placeholder = labels[lang].placeholder;
+    document.querySelector('#voice-overlay .voice-label span').textContent = labels[lang].voiceLabel;
+    
+    // Cancel ongoing speech if language changes
+    if (window.speechSynthesis) window.speechSynthesis.cancel();
+}
 
 // ── Override sendMessage to patch TTS into bot replies ────────────────
 const _origSendMessage = sendMessage;
