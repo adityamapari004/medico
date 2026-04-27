@@ -30,22 +30,32 @@ app = Flask(__name__)
 app.secret_key = 'super_secret_medico_key'
 
 # Database Configuration
-db_url = os.environ.get('DATABASE_URL')
-if db_url:
-    db_url = db_url.strip().strip("'\"")
+#db_url = os.environ.get('DATABASE_URL')
+#if db_url:
+   # db_url = db_url.strip().strip("'\"")
 
-if not db_url or db_url.lower() == "none":
-    db_url = "sqlite:///medico.db"
-elif "://" not in db_url:
+#if not db_url or db_url.lower() == "none":
+  #  db_url = "sqlite:///medico.db"
+##elif "://" not in db_url:
     # If it's just a filename like 'medico.db', make it a valid sqlite URL
     db_url = f"sqlite:///{db_url}"
-elif db_url.startswith("postgres://"):
+#elif db_url.startswith("postgres://"):
     db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+
+db_url=os.environ.get('DATABASE_URL')
+if not db_url:
+    db_url='sqlite:///medico.db'
+
+if db_url.startswith('postgres://'):
+    db_url=db_url.replace('postgres://', 'postgresql://',1)
+
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('artifacts', 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
 
 print(f"DEBUG- Database URL: {repr(db_url)}")  # Debug print to verify the database URL
 
