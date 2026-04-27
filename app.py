@@ -26,13 +26,18 @@ from src.pipeline.prediction_pipeline import (
     PredictPipeline,
     CustomData
 )
-
-# ── Flask App ──────────────────────────────────
 app = Flask(__name__)
 app.secret_key = 'super_secret_medico_key'
-# Database Configuration (PostgreSQL)
-DATABASE_URL = os.environ.get('DATABASE_URL')
-app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE_URL
+
+# Database Configuration
+db_url = os.environ.get('DATABASE_URL')
+if not db_url:
+    db_url = "sqlite:///medico.db"
+else:
+    # Fix for Heroku/PostgreSQL connection strings
+    db_url = db_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('artifacts', 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
