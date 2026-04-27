@@ -7,3 +7,8 @@ python-dotenv
 requests
 flask
 folium
+flask-sqlalchemy
+pymysql
+flask-login
+werkzeug
+psycopg2-binary
