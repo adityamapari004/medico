@@ -34,8 +34,10 @@ db_url = os.environ.get('DATABASE_URL')
 if not db_url:
     db_url = "sqlite:///medico.db"
 else:
-    # Fix for Heroku/PostgreSQL connection strings
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
+    # Standardize URL: strip whitespace and fix common protocol issues
+    db_url = db_url.strip().strip("'\"")
+    if db_url.startswith("postgres://"):
+        db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -441,9 +443,9 @@ def _chatbot_reply(msg: str) -> str:
 
 # ── RUN ────────────────────────────────────────
 if __name__ == "__main__":
-    port=int(os.environ.get("PORT",5000))
+    port = int(os.environ.get("PORT", 5000))
     app.run(
         host  = "0.0.0.0",
-        port  = 5000,
+        port  = port,
         debug = True
     )
