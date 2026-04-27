@@ -38,9 +38,9 @@ app.secret_key = 'super_secret_medico_key'
   #  db_url = "sqlite:///medico.db"
 ##elif "://" not in db_url:
     # If it's just a filename like 'medico.db', make it a valid sqlite URL
-    db_url = f"sqlite:///{db_url}"
+    #db_url = f"sqlite:///{db_url}"
 #elif db_url.startswith("postgres://"):
-    db_url = db_url.replace("postgres://", "postgresql://", 1)
+    #db_url = db_url.replace("postgres://", "postgresql://", 1)
 
 
 db_url=os.environ.get('DATABASE_URL')
