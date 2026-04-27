@@ -47,6 +47,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = os.path.join('artifacts', 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+print(f"DEBUG- Database URL: {repr(db_url)}")  # Debug print to verify the database URL
+
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
