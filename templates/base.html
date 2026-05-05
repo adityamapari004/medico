@@ -1,0 +1,232 @@
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}MediGuide{% endblock %}</title>
+    <!-- Foundation CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/css/foundation.min.css" crossorigin="anonymous">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #0ABFA3;
+            --secondary-color: #111E35;
+            --bg-dark: #070E1C;
+            --text-light: #EEF4FF;
+            --text-muted: #5A7090;
+            --accent-red: #FF6B6B;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: #C8D8E8;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Syne', sans-serif;
+            color: var(--text-light);
+        }
+
+        .top-bar, .top-bar ul {
+            background: var(--secondary-color);
+        }
+
+        .top-bar .menu a {
+            color: var(--text-light);
+        }
+
+        .top-bar .menu a:hover {
+            color: var(--primary-color);
+        }
+
+        .button.primary {
+            background-color: var(--primary-color);
+            color: var(--bg-dark);
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+            border-radius: 8px;
+        }
+
+        .button.primary:hover {
+            background-color: var(--text-light);
+            color: var(--bg-dark);
+        }
+
+        .card {
+            background: var(--secondary-color);
+            border: 1px solid rgba(10,191,163,0.12);
+            border-radius: 16px;
+            color: #C8D8E8;
+        }
+
+        .card-divider {
+            background: rgba(10,191,163,0.05);
+            color: var(--text-light);
+            font-family: 'Syne', sans-serif;
+            font-weight: 700;
+        }
+
+        /* Custom scrollbar for dark theme */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #111E35;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+  </head>
+  <body>
+
+    <!-- Navigation -->
+    <div class="top-bar">
+      <div class="top-bar-left">
+        <ul class="menu">
+          <li class="menu-text"><a href="/" style="font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--text-light);">Medi<span style="color: var(--primary-color);">Guide</span></a></li>
+        </ul>
+      </div>
+      <div class="top-bar-right">
+        <ul class="dropdown menu" data-dropdown-menu style="background: var(--secondary-color);">
+          <li><a data-open="emergencyModal" style="color: var(--accent-red); font-weight: 700; cursor: pointer;">🆘 Emergency</a></li>
+          <li>
+            <a href="#" style="font-size: 1.2rem; color: var(--text-light);">☰ Menu</a>
+            <ul class="menu vertical" style="background: var(--secondary-color); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; overflow: hidden; min-width: 200px;">
+              <li><a href="/dashboard">📊 Dashboard</a></li>
+              <li><a href="/predict">🩺 Symptom Check</a></li>
+              <li><a href="/doctors">👨‍⚕️ Doctors</a></li>
+              <li><a href="/pharmacies">💊 Pharmaceutical</a></li>
+              <li><a href="/interactions">🔄 Interactions</a></li>
+              <li><a href="/reminders">⏰ Reminders</a></li>
+              <li><a href="/health_tips">💡 Health Tips</a></li>
+              <li><a href="/bmi">⚖️ BMI Calc</a></li>
+              {% if current_user and current_user.is_authenticated %}
+                {% if current_user.email == 'admin@medico.com' %}
+                <li><a href="/admin" style="color: #F5C842;">👑 Admin Panel</a></li>
+                {% endif %}
+                <li><a href="/logout" style="color: var(--accent-red); font-weight: bold;">🚪 Logout</a></li>
+              {% else %}
+                <li><a href="/login">🔑 Login</a></li>
+              {% endif %}
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="text-align: right; padding: 10px;">
+        <div id="google_translate_element" style="display: inline-block;"></div>
+    </div>
+
+    <div class="grid-container" style="padding-top: 2rem; padding-bottom: 2rem;">
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Emergency Modal -->
+    <div class="reveal" id="emergencyModal" data-reveal style="background: var(--secondary-color); border: 1px solid var(--accent-red); border-radius: 16px; color: white; padding: 2rem;">
+      <h3 style="color: var(--accent-red); font-weight: 800; text-align: center;">🚨 Emergency Contacts</h3>
+      <p class="lead" style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Who do you need to call?</p>
+      
+      <div class="grid-y grid-padding-y">
+          <a href="tel:108" class="button alert large expanded" style="border-radius: 8px; font-weight: bold; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(239,68,68,0.4);">🚑 Call Ambulance (108)</a>
+          
+          {% if global_emergency_contacts %}
+              <div style="margin: 1.5rem 0; border-top: 1px solid rgba(255,255,255,0.1);"></div>
+              <p style="color: var(--text-muted); text-align: center; margin-bottom: 1rem; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Your Saved Contacts</p>
+              {% for c in global_emergency_contacts %}
+                  <a href="tel:{{ c.phone }}" class="button expanded" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; font-weight: bold; color: var(--text-light); text-align: left; display: flex; justify-content: space-between; padding: 1rem;">
+                      <span>📞 {{ c.name }}</span>
+                      <span style="opacity: 0.7; font-weight: normal;">{{ c.phone }}</span>
+                  </a>
+              {% endfor %}
+          {% endif %}
+      </div>
+
+      <button class="close-button" data-close aria-label="Close modal" type="button" style="color: var(--text-muted);">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+
+    <!-- Foundation JS -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.8.1/dist/js/foundation.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
+      }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script>
+      $(document).foundation();
+      // Highlight active nav item
+      $(document).ready(function() {
+          var currentPath = window.location.pathname;
+          $('.top-bar-right .vertical.menu a').each(function() {
+              if($(this).attr('href') === currentPath) {
+                  $(this).css({
+                      'color': 'var(--bg-dark)',
+                      'background-color': 'var(--primary-color)',
+                      'font-weight': 'bold'
+                  });
+              }
+          });
+      });
+    </script>
+
+    {% if current_user and current_user.is_authenticated %}
+    <script>
+        function checkReminders() {
+            fetch('/api/reminders')
+                .then(res => res.json())
+                .then(data => {
+                    if(data.reminders) {
+                        const now = new Date();
+                        const currentHours = String(now.getHours()).padStart(2, '0');
+                        const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+                        const currentTimeStr = currentHours + ":" + currentMinutes;
+                        
+                        data.reminders.forEach(reminder => {
+                            if(reminder.time === currentTimeStr) {
+                                const remindedKey = 'reminded_' + reminder.medicine_name + '_' + currentTimeStr + '_' + now.toDateString();
+                                if(!localStorage.getItem(remindedKey)) {
+                                    if ("Notification" in window && Notification.permission === "granted") {
+                                        new Notification("Medication Reminder!", {
+                                            body: "It's time to take: " + reminder.medicine_name
+                                        });
+                                    } else {
+                                        alert("🔔 Medication Reminder: Time to take your " + reminder.medicine_name);
+                                    }
+                                    localStorage.setItem(remindedKey, "true");
+                                    if ('speechSynthesis' in window) {
+                                        const msg = new SpeechSynthesisUtterance("Reminder! It is time to take your " + reminder.medicine_name);
+                                        window.speechSynthesis.speak(msg);
+                                    }
+                                }
+                            }
+                        });
+                    }
+                });
+        }
+
+        if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+        setInterval(checkReminders, 60000);
+        checkReminders();
+    </script>
+    {% endif %}
+
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>

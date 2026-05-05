@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - MediGuide{% endblock %}
+
+{% block content %}
+<div class="grid-container">
+    <div class="grid-x grid-padding-x">
+        <div class="cell">
+            <h2 style="margin-bottom: 2rem;">Admin <span style="color: var(--primary-color);">Panel</span></h2>
+        </div>
+
+        <!-- STATS CARDS -->
+        <div class="cell medium-4">
+            <div class="card text-center" style="background: var(--secondary-color); border: 1px solid rgba(10,191,163,0.2); border-radius: 16px;">
+                <div class="card-section">
+                    <h1 style="color: var(--primary-color); font-weight: 800; font-size: 3rem;">{{ total_users }}</h1>
+                    <p style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Total Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="cell medium-4">
+            <div class="card text-center" style="background: var(--secondary-color); border: 1px solid rgba(10,191,163,0.2); border-radius: 16px;">
+                <div class="card-section">
+                    <h1 style="color: var(--primary-color); font-weight: 800; font-size: 3rem;">{{ total_checks }}</h1>
+                    <p style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Symptom Checks</p>
+                </div>
+            </div>
+        </div>
+        <div class="cell medium-4">
+            <div class="card text-center" style="background: var(--secondary-color); border: 1px solid rgba(10,191,163,0.2); border-radius: 16px;">
+                <div class="card-section">
+                    <h1 style="color: var(--primary-color); font-weight: 800; font-size: 3rem;">{{ total_records }}</h1>
+                    <p style="color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Medical Records</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECENT USERS -->
+        <div class="cell large-6" style="margin-top: 2rem;">
+            <div class="card">
+                <div class="card-divider">Recent Registrations</div>
+                <div class="card-section" style="overflow-x: auto;">
+                    <table class="hover" style="background: transparent; color: #C8D8E8; border-collapse: collapse; width: 100%;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <th style="color: var(--text-muted);">ID</th>
+                                <th style="color: var(--text-muted);">Name</th>
+                                <th style="color: var(--text-muted);">Email</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for u in recent_users %}
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td>{{ u.id }}</td>
+                                <td style="font-weight: bold; color: var(--text-light);">{{ u.name }}</td>
+                                <td>{{ u.email }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3">No users found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- RECENT ACTIVITY -->
+        <div class="cell large-6" style="margin-top: 2rem;">
+            <div class="card">
+                <div class="card-divider">Recent Symptom Checks</div>
+                <div class="card-section" style="overflow-x: auto;">
+                    <table class="hover" style="background: transparent; color: #C8D8E8; border-collapse: collapse; width: 100%;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <th style="color: var(--text-muted);">User ID</th>
+                                <th style="color: var(--text-muted);">Symptoms</th>
+                                <th style="color: var(--text-muted);">Predicted</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for chk in recent_checks %}
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td>{{ chk.user_id }}</td>
+                                <td>{{ chk.symptoms[:30] }}{% if chk.symptoms|length > 30 %}...{% endif %}</td>
+                                <td style="color: var(--primary-color); font-weight: bold;">{{ chk.predicted_medicine }}</td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="3">No recent activity.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

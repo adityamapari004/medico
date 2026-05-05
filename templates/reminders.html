@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Medication Reminders - MediGuide{% endblock %}
+
+{% block content %}
+<div class="grid-container">
+    <div class="grid-x grid-padding-x">
+        <div class="cell">
+            <h2 style="margin-bottom: 2rem;">Medication <span style="color: var(--primary-color);">Reminders</span></h2>
+        </div>
+
+        <!-- Add Reminder Form -->
+        <div class="cell large-4">
+            <div class="card dashboard-card">
+                <div class="card-divider">Add Reminder</div>
+                <div class="card-section">
+                    <form method="POST">
+                        <label style="color: var(--text-muted);">Medicine Name
+                            <input type="text" name="medicine_name" required placeholder="e.g. Paracetamol" style="background: rgba(255,255,255,0.05); color: white; border-radius: 8px;">
+                        </label>
+                        <label style="color: var(--text-muted);">Dosage
+                            <input type="text" name="dosage" placeholder="e.g. 1 Tablet" style="background: rgba(255,255,255,0.05); color: white; border-radius: 8px;">
+                        </label>
+                        <label style="color: var(--text-muted);">Time
+                            <input type="time" name="time" required style="background: rgba(255,255,255,0.05); color: white; border-radius: 8px;">
+                        </label>
+                        <button type="submit" class="button primary expanded">Save Reminder</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reminders List -->
+        <div class="cell large-8">
+            <div class="card">
+                <div class="card-divider">Your Reminders</div>
+                <div class="card-section" style="overflow-x: auto;">
+                    <table class="hover" style="background: transparent; color: #C8D8E8; border-collapse: collapse;">
+                        <thead>
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <th style="color: var(--text-muted); font-family: 'Syne', sans-serif;">Medicine</th>
+                                <th style="color: var(--text-muted); font-family: 'Syne', sans-serif;">Dosage</th>
+                                <th style="color: var(--text-muted); font-family: 'Syne', sans-serif;">Time</th>
+                                <th style="color: var(--text-muted); font-family: 'Syne', sans-serif;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reminder in reminders %}
+                            <tr style="border-bottom: 1px solid rgba(255,255,255,0.06);">
+                                <td style="font-size: 1rem; font-weight: bold; color: var(--text-light);">{{ reminder.medicine_name }}</td>
+                                <td style="font-size: 0.9rem;">{{ reminder.dosage }}</td>
+                                <td style="font-size: 0.9rem; color: var(--primary-color);">{{ reminder.time }}</td>
+                                <td>
+                                    <a href="{{ url_for('delete_reminder', reminder_id=reminder.id) }}" class="button alert tiny" style="margin-bottom: 0;">Delete</a>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center" style="padding: 3rem;">
+                                    <p style="font-size: 2rem;">⏰</p>
+                                    <p style="color: var(--text-muted);">No reminders set.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

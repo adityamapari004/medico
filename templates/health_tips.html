@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Health Tips - MediGuide{% endblock %}
+
+{% block content %}
+<div class="grid-container">
+    <div class="grid-x grid-padding-x">
+        <div class="cell text-center" style="margin-bottom: 3rem;">
+            <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">Daily <span style="color: var(--primary-color);">Health Tips</span></h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">Read our latest articles and tips for maintaining a healthy lifestyle.</p>
+        </div>
+
+        <div class="cell">
+            <div class="grid-x grid-margin-x">
+                {% for tip in tips %}
+                <div class="cell medium-4" style="margin-bottom: 2rem;">
+                    <div class="card h-100" style="background: var(--secondary-color); border: 1px solid rgba(10,191,163,0.12); border-radius: 16px; padding: 1.5rem; transition: transform 0.3s ease;">
+                        <h4 style="color: var(--text-light); font-weight: 700; margin-bottom: 1rem;">{{ tip.title }}</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; line-height: 1.6;">{{ tip.content }}</p>
+                        <div style="margin-top: 1rem; font-size: 0.8rem; color: rgba(255,255,255,0.3);">
+                            Published: {{ tip.date_added.strftime('%b %d, %Y') }}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="cell text-center">
+                    <p style="color: var(--text-muted);">No health tips available at the moment.</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card.h-100:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary-color);
+    }
+</style>
+{% endblock %}

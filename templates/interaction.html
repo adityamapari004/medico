@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Medicine Interaction Checker - MediGuide{% endblock %}
+
+{% block content %}
+<div class="grid-container">
+    <div class="grid-x grid-padding-x align-center">
+        <div class="cell large-8">
+            <div class="card" style="margin-top: 2rem;">
+                <div class="card-divider">Medicine Interaction Checker</div>
+                <div class="card-section">
+                    <p style="color: var(--text-muted); margin-bottom: 2rem;">Enter two medications to check for potential interactions.</p>
+                    <form method="POST">
+                        <div class="grid-x grid-padding-x">
+                            <div class="cell medium-6">
+                                <label style="color: var(--text-muted);">Medicine 1
+                                    <input type="text" name="medicine_1" value="{{ med1|default('') }}" required placeholder="e.g. Aspirin" style="background: rgba(255,255,255,0.05); color: white; border-radius: 8px;">
+                                </label>
+                            </div>
+                            <div class="cell medium-6">
+                                <label style="color: var(--text-muted);">Medicine 2
+                                    <input type="text" name="medicine_2" value="{{ med2|default('') }}" required placeholder="e.g. Ibuprofen" style="background: rgba(255,255,255,0.05); color: white; border-radius: 8px;">
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="button primary expanded" style="margin-top: 1rem;">Check Interactions</button>
+                    </form>
+
+                    {% if result %}
+                    <div class="callout {% if 'Warning' in result %}warning{% else %}success{% endif %}" style="margin-top: 2rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(10,191,163,0.2);">
+                        <h5 style="color: var(--text-light);">Interaction Result:</h5>
+                        <p style="color: var(--text-muted); margin-bottom: 0;">{{ result }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

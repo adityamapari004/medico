@@ -1,176 +1,51 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MediGuide</title>
-    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+{% block title %}MediGuide - AI Healthcare{% endblock %}
 
-        body {
-            background: #070E1C;
-            color: #C8D8E8;
-            font-family: 'DM Sans', sans-serif;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+{% block content %}
+<div class="grid-x grid-padding-x align-center-middle" style="min-height: 70vh;">
+    <div class="cell medium-8 large-6 text-center">
+        <span class="label primary" style="background: rgba(10, 191, 163, 0.1); color: var(--primary-color); border: 1px solid rgba(10, 191, 163, 0.3); border-radius: 100px; padding: 0.5rem 1rem; margin-bottom: 2rem;">
+            🧬 AI POWERED HEALTHCARE
+        </span>
+        
+        <h1 style="font-size: clamp(40px, 7vw, 80px); line-height: 1.1; margin-bottom: 1.5rem;">
+            Smart <span style="color: var(--primary-color);">Medicine</span><br>Recommendation
+        </h1>
+        
+        <p style="font-size: 1.2rem; color: var(--text-muted); max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.7;">
+            Describe your symptoms and get instant medicine recommendations with nearby doctor locations.
+        </p>
 
-        .hero {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
-        .badge {
-            display: inline-block;
-            background: rgba(10, 191, 163, 0.1);
-            border: 1px solid rgba(10, 191, 163, 0.3);
-            color: #0ABFA3;
-            padding: 6px 18px;
-            border-radius: 100px;
-            font-size: 12px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 28px;
-        }
-
-        h1 {
-            font-family: 'Syne', sans-serif;
-            font-size: clamp(40px, 7vw, 80px);
-            font-weight: 800;
-            color: #EEF4FF;
-            line-height: 1.1;
-            margin-bottom: 20px;
-        }
-
-        h1 span {
-            color: #0ABFA3;
-        }
-
-        p {
-            font-size: 18px;
-            color: #5A7090;
-            max-width: 480px;
-            margin: 0 auto 40px;
-            line-height: 1.7;
-        }
-
-        .btn {
-            background: #0ABFA3;
-            color: #070E1C;
-            padding: 16px 40px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-family: 'Syne', sans-serif;
-            font-weight: 700;
-            font-size: 16px;
-            transition: all 0.3s;
-            display: inline-block;
-        }
-
-        .btn:hover {
-            background: #EEF4FF;
-            transform: translateY(-3px);
-        }
-
-        .stats {
-            display: flex;
-            gap: 60px;
-            justify-content: center;
-            margin-top: 60px;
-            padding-top: 40px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .stat-num {
-            font-family: 'Syne', sans-serif;
-            font-size: 36px;
-            font-weight: 800;
-            color: #EEF4FF;
-        }
-
-        .stat-num span {
-            color: #0ABFA3;
-        }
-
-        .stat-label {
-            font-size: 12px;
-            color: #5A7090;
-            margin-top: 4px;
-        }
-
-        .top-nav {
-            position: absolute;
-            top: 30px;
-            right: 40px;
-            display: flex;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .top-nav a {
-            color: #EEF4FF;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.3s;
-            opacity: 0.8;
-        }
-
-        .top-nav a:hover {
-            color: #0ABFA3;
-            opacity: 1;
-        }
-
-        .logout-link {
-            color: #FF6B6B !important;
-        }
-    </style>
-</head>
-
-<body>
-    <nav class="top-nav">
-        <a href="/doctors">Doctors</a>
-        <a href="/predict">Symptom Check</a>
-        <a href="/pharmacies">Pharmaceutical</a>
-        <a href="tel:108"
-            style="color: #FF6B6B; font-weight: 700; border: 1px solid rgba(255,107,107,0.3); padding: 5px 12px; border-radius: 8px;">🆘
-            Emergency</a>
-    </nav>
-    <div class="hero">
-        <div class="badge">🧬 AI Powered Healthcare</div>
-        <h1>Smart <span>Medicine</span><br>Recommendation</h1>
-        <p>Describe your symptoms and get instant medicine recommendations with nearby doctor locations.</p>
-
-        <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 40px;">
-            <a href="/predict" class="btn">Get Started →</a>
-            <a href="tel:108" class="btn"
-                style="background: rgba(255,107,107,0.1); border: 2px solid #FF6B6B; color: #FF6B6B;">Emergency Call</a>
+        <div class="grid-x grid-margin-x align-center" style="margin-bottom: 3rem;">
+            <div class="cell shrink">
+                <a href="/predict" class="button large primary">Get Started →</a>
+            </div>
+            <div class="cell shrink">
+                <a href="tel:108" class="button large" style="background: rgba(255,107,107,0.1); border: 2px solid var(--accent-red); color: var(--accent-red);">Emergency Call</a>
+            </div>
         </div>
 
-        <div class="stats">
-            <div>
-                <div class="stat-num">98<span>%</span></div>
-                <div class="stat-label">Accuracy</div>
+        <div class="grid-x grid-margin-x align-center" style="border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 3rem;">
+            <div class="cell small-4">
+                <div style="font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--text-light);">
+                    98<span style="color: var(--primary-color);">%</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Accuracy</div>
             </div>
-            <div>
-                <div class="stat-num">120<span>+</span></div>
-                <div class="stat-label">Conditions</div>
+            <div class="cell small-4">
+                <div style="font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--text-light);">
+                    120<span style="color: var(--primary-color);">+</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Conditions</div>
             </div>
-            <div>
-                <div class="stat-num">5<span>k+</span></div>
-                <div class="stat-label">Doctors</div>
+            <div class="cell small-4">
+                <div style="font-family: 'Syne', sans-serif; font-size: 2.5rem; font-weight: 800; color: var(--text-light);">
+                    5<span style="color: var(--primary-color);">k+</span>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Doctors</div>
             </div>
         </div>
     </div>
-</body>
-
-</html>
+</div>
+{% endblock %}
