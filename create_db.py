@@ -6,7 +6,7 @@ load_dotenv()
 
 def create_database():
     try:
-        mongo_uri = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/')
+        mongo_uri = os.environ.get('MONGO_URI')
         client = MongoClient(mongo_uri)
         
         # Ping the database to check connection
